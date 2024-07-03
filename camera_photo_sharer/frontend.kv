@@ -1,0 +1,45 @@
+<CameraScreen>:
+    GridLayout:
+        cols: 1
+        padding: 1
+        spacing: 1
+        Camera:
+            id: camera_id
+            resolution: (640, 480) # does not work without a webcam
+            play: False
+        Button:
+            id: camera_control
+            text: 'Start Camera'
+            on_press: root.start() if root.ids.camera_id.play == False else root.stop()
+        Button:
+            id: camera_capture
+            text: 'Capture Screen'
+            on_press: root.capture()
+
+<ImageScreen>:
+    GridLayout:
+        cols: 1
+        padding:1
+        spacing:1
+        Image:
+            id: img_id
+        Button:
+            text: 'Create a sharable link'
+        Label:
+            id: text_id
+            text: ''
+        GridLayout:
+            cols: 2
+            Button:
+                text: 'Copy link'
+            Button:
+                text: 'Open link'
+
+<RootWidget>:
+    CameraScreen:
+        id: camera_screen
+        name: 'camera_screen'
+
+    ImageScreen:
+        id: image_screen
+        name: 'image_screen'

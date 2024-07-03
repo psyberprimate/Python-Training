@@ -1,0 +1,36 @@
+Software for drawing geometrical shapes such as squares, rectangles, triangles and circles. User provides input for colors, dimensions and shapes they want. The program draws a canves with the user input shapes as .png
+
+objects:
+        Square:
+                x
+                y
+                side
+                colors
+                draw(canvas)
+
+        Rectangle:
+                x
+                y
+                width
+                height
+                colors
+                draw(canvas)
+
+        Triangle:
+                x
+                y
+                base
+                height
+                draw(canvas)
+
+        Circle:
+                x
+                y
+                radius
+                draw(canvas)
+
+        Canvas:
+                width
+                height
+                colors
+                make(imagepath)
