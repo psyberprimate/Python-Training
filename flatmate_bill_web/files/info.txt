@@ -1,0 +1,13 @@
+flatmates bill gets as an input a bill for a particular bill and days for each flatmates stayed in the house and
+return how much a flatmates need to pay and it also generated a PDF report stating the names of the flatmates, 
+the period, and how much each of them had to pay.
+
+objects: bill:
+            amount
+        flatmate:
+            days
+            name
+            payment      
+        pdf_reporter:
+            
+            

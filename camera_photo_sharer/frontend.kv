@@ -1,41 +1,69 @@
 <CameraScreen>:
     GridLayout:
         cols: 1
-        padding: 1
-        spacing: 1
+        padding: 5
+        spacing: 5
         Camera:
             id: camera_id
             resolution: (640, 480) # does not work without a webcam
             play: False
+            size_hint_y: 0.9
+            opacity: 0
         Button:
             id: camera_control
             text: 'Start Camera'
             on_press: root.start() if root.ids.camera_id.play == False else root.stop()
+            size_hint_y: 0.05
+            #background_normal: 'camera_photo_sharer/picture/normal.png'
+            #background_down: 'camera_photo_sharer/picture/down.png'
         Button:
             id: camera_capture
             text: 'Capture Screen'
             on_press: root.capture()
+            size_hint_y: 0.05
+            #background_normal: 'camera_photo_sharer/picture/normal.png'
+            #background_down: 'camera_photo_sharer/picture/down.png'
 
 <ImageScreen>:
     GridLayout:
         cols: 1
-        padding:1
-        spacing:1
+        padding:5
+        spacing:5
         Image:
             id: img_id
+            size_hint_y: 0.85
         Button:
             text: 'Create a sharable link'
+            size_hint_y: 0.05
+            #background_normal: 'camera_photo_sharer/picture/normal.png'
+            #background_down: 'camera_photo_sharer/picture/down.png'
         Label:
             id: text_id
             text: ''
+            size_hint_y: 0.05
         GridLayout:
             cols: 2
+            size_hint_y: 0.05
             Button:
                 text: 'Copy link'
+                on_press: root.copy_link()
+                #background_normal: 'camera_photo_sharer/picture/normal.png'
+                #background_down: 'camera_photo_sharer/picture/down.png'
             Button:
                 text: 'Open link'
+                on_press: root.open_link()
+                #background_normal: 'camera_photo_sharer/picture/normal.png'
+                #background_down: 'camera_photo_sharer/picture/down.png'
 
 <RootWidget>:
+
+    canvas.before:
+        Color:
+            rgba:   (0.4, 0.4, 0.2, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
     CameraScreen:
         id: camera_screen
         name: 'camera_screen'
