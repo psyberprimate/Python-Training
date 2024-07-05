@@ -27,15 +27,14 @@ class BillFormPage(MethodView):
     Creates bill form based on user input from BillFormTemplatePage()
     """    
     def post(self):
-        bill_list = [] # list for the bill_forms_per_flatmate
-        
         the_bill = BillFormTemplate(request.form)
         amount = float(the_bill.amount.data)
         period = the_bill.period.data
         n_flatmates = int(the_bill.number_of_flatmates.data)
-        for _ in range(n_flatmates):
-            bill_list.append(BillForm())
-        return render_template("bill_form_page.html", amount=the_bill.amount.data, period=the_bill.period.data, bill_form=bill_list)
+        bill_list = BillFormList(n_flatmates)
+        for i in range(len(bill_list)):
+            bill_list.list[i] = BillForm()
+        return render_template("bill_form_page.html", bill_form=bill_list)
 
 
 class BillResultPage(MethodView):
@@ -60,6 +59,10 @@ class BillFormTemplate(Form):
     number_of_flatmates = StringField("Enter the amount of flatmates: ", default=2)
     button = SubmitField("Make the template")
     
+class BillFormList():
+    def __init__(self, lenght: int):
+        self.list = [None] * lenght
+
 class BillForm(Form):
     name = StringField("Name: ", default=None)
     days_in = StringField("Days in the house: ", default=0)
