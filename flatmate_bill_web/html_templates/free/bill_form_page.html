@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Title</title>
+    </head>
+    <body>
+        <h2> The bill form <br> {{amount.data}} - {{period.data}} EUR </h2>
+        <p> Fill the form and click the button to get the results</p>
+        <form action="/results" method="post"> 
+            {%for i in range(bill_form)%}
+            <p>{{i+1}}# flatmate </p>
+            {{bill_form[i].name.label}} {{bill_form[i].name}}
+            <br>
+            {{bill_form[i].days_in.label}} {{bill_form[i].days_in}}
+            <hr>
+            <br>
+            {% endfor %}
+            {{bill_form[0].button}}
+        </form>
+    </body>
+</html>

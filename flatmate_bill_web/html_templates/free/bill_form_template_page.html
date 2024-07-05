@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Title</title>
+    </head>
+    <body>
+        <h2> Flatmate billing - The bill form creation</h2>
+        <p> Fill the form with bill amount, date period and amount of flatmates</p>
+        <form action="/bill" method="post">
+            {{bill_form_template.amount.label}} {{bill_form_template.amount}}
+            <br>
+            {{bill_form_template.period.label}} {{bill_form_template.amount}}
+            <br>
+            {{bill_form_template.number_of_flatmates.label}} {{bill_form_template.number_of_flatmates}}
+            <br>
+            {{bill_form_template.button}}
+        </form>
+    </body>
+</html>

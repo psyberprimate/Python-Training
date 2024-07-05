@@ -12,3 +12,7 @@ class Flatmate:
     def pays(self, bill, other_flat_mate_days) -> float:
         weight = self.days_in / (self.days_in + other_flat_mate_days.days_in)
         return  weight * bill.amount
+    
+if __name__ == '__main__':
+    pass
+       
