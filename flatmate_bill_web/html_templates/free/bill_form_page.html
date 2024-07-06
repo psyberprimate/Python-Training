@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -5,18 +6,21 @@
         <title>Title</title>
     </head>
     <body>
-        <h2> The bill form <br> {{amount.data}} - {{period.data}} EUR </h2>
+        <h2> The bill form <br> {{bill_form.bill.amount.data}} - {{bill_form.bill.period.data}} EUR </h2>
         <p> Fill the form and click the button to get the results</p>
+        <p> {{bill_form.bill}}</p>
+        <p> {{bill_form.list}}</p>
+        <hr>
         <form action="/results" method="post"> 
-            {%for i in range(bill_form)%}
-            <p>{{i+1}}# flatmate </p>
-            {{bill_form[i].name.label}} {{bill_form[i].name}}
+            {%for index, _ in enumerate(bill_form.list)%}
+            <p>{{index+1}}# flatmate </p>
+            {{bill_form.list[index].name.label}} {{bill_form.list[index].name}}
             <br>
-            {{bill_form[i].days_in.label}} {{bill_form[i].days_in}}
+            {{bill_form.list[index].days_in.label}} {{bill_form.list[index].days_in}}
             <hr>
             <br>
             {% endfor %}
-            {{bill_form[0].button}}
+            {{bill_form.list[0].button}}
         </form>
     </body>
 </html>
