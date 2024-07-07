@@ -6,15 +6,10 @@ import time
 import webbrowser
 
 class CameraScreen(Screen):
-    """
-    Class for controlling the camera screen
-    
-    Args:
-        Screen (_type_): inherited from kivy.uix.screenmanager
+    """Class for controlling the camera screen
     """    
     def start(self):
-        """
-        Camera start and button text change
+        """Camera start and button text change
         """        
         self.ids.camera_id.opacity = 1
         self.ids.camera_id.play = True
@@ -22,8 +17,7 @@ class CameraScreen(Screen):
         self.ids.camera.texture = self.ids.camera_id._camera.texture
     
     def close(self):
-        """
-        Camera stop and button text change
+        """Camera stop and button text change
         """        
         self.ids.camera_id.opacity = 0
         self.ids.camera_id.play = False
@@ -31,8 +25,7 @@ class CameraScreen(Screen):
         self.ids.camera.texture = None
     
     def capture(self):
-        """
-        Create a filename with current time while capturing current frame as a photo and saving a photo image
+        """Create a filename with current time while capturing current frame as a photo and saving a photo image
         """        
         current_file_time = time.strftime('%Y%m%d-%H%M%S')
         file_path = '/photo_share_app/pictures/'
@@ -44,14 +37,12 @@ class CameraScreen(Screen):
 
 class ImageScreen(Screen):
     
-    """
-    Class for screen for showing the picture and options
+    """Class for screen for showing the picture and options
     """    
     link_error_message = 'Create a photo link first'
     
     def create_link(self):
-        """
-        Access the photo provided in the filepath and upload the phto to the web and show the web link in label widget
+        """Access the photo provided in the filepath and upload the phto to the web and show the web link in label widget
         """        
         file_path = PhotoApp.get_running_app().root.ids.camera_screen.self.manager.file_full_path
         # remember to provide API key for 'api_key' attribute

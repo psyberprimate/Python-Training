@@ -3,8 +3,7 @@ import flatmate as flat
 import pdf_report as report
 
 def ask_for_bill() -> tuple:
-    """
-    Asks for a bill amount and data, then asks for user input for two flatmates - names and days spend in house
+    """Asks for a bill amount and data, then asks for user input for two flatmates - names and days spend in house
     """    
     
     bill_amount = float(input("Enter the bill amount: "))

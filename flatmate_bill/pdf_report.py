@@ -3,8 +3,7 @@ import webbrowser
 import os
 
 class PdfReport:
-    """
-    Generates a pdf file that contains the data about flatmate bill such as their names, their payment amount for the bill,
+    """Generates a pdf file that contains the data about flatmate bill such as their names, their payment amount for the bill,
     and the period of the bill
     """    
     def __init__(self, filename: str = "default"):

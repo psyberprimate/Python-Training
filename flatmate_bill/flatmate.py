@@ -1,6 +1,5 @@
 class Flatmate:
-    """
-    Creates a flatmate object per person for paying share of the living costs in bill
+    """Creates a flatmate object per person for paying share of the living costs in bill
     """    
     
     def __init__(self, name : str = "", days_in_house: int = 0):

@@ -10,24 +10,26 @@ class HomePage(MethodView):
         return render_template("index_basic.html")
 
 class BillFormPage(MethodView):
-    """
-    Simple way to do forms
+    """Simple way to do forms
     """    
     def get(self):
         bill_form = BillForm()
-        return render_template("bill_form_page_basic.html", bill_form_template=bill_form)
+        return render_template("bill_form_page_basic.html",
+                               bill_form_template=bill_form)
 
 
 class BillResultPage(MethodView):
-    """
-    Takes user input from bill form and calculates the split bill based on user input,
+    """Takes user input from bill form and calculates the split bill based on user input,
     returns a dictionary with 'name' : amount_to_pay
     """    
     def post(self):
         bill_form = BillForm(request.form)
-        the_bill = bill.Bill(float(bill_form.amount.data), bill_form.period.data)
-        flatmate1 = flatmate.Flatmate(bill_form.name1.data, int(bill_form.days_in1.data))
-        flatmate2 = flatmate.Flatmate(bill_form.name2.data, int(bill_form.days_in2.data))
+        the_bill = bill.Bill(float(bill_form.amount.data),
+                             bill_form.period.data)
+        flatmate1 = flatmate.Flatmate(bill_form.name1.data,
+                                      int(bill_form.days_in1.data))
+        flatmate2 = flatmate.Flatmate(bill_form.name2.data,
+                                      int(bill_form.days_in2.data))
         
         pays = {flatmate1.name : flatmate1.pays(the_bill, flatmate2),
                 flatmate2.name: flatmate2.pays(the_bill, flatmate1)}

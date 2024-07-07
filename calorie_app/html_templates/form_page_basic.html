@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Calories calculator</title>
+        <link rel="stylesheet" href="static/form.css">
+    </head>
+    <body>
+        <h2> Fill in the information and click the 'calculate calories' button</h2>
+        <form action="/calories" method="post"> 
+            {{bill_form.weight.label}} {{bill_form.weight}}
+            <br>
+            {{bill_form.height.label}} {{bill_form.height}}
+            <br>
+            {{bill_form.age.label}} {{bill_form.age}}
+            <br>
+            {{bill_form.gender.label}} {{bill_form.gender}}
+            <br>
+            <hr>
+            Today's climate has an impact on the daily calorie in take needed. If the weather is cold or hot enough, you will need more calories for your daily intake. Tell your location by country and city.
+            <hr>
+            {{bill_form.country.label}} {{bill_form.country}}
+            <br>
+            {{bill_form.city.label}} {{bill_form.city}}
+            <br>
+            {{bill_form.button}}
+            <hr>
+            {% if calories%}
+            <h2>Today you need {{calories}} calories!</h2>
+            {% endif %}
+            <hr>
+        </form>
+        <a href = {{url_for('home_page')}}> Go to the home page </a>
+    </body>
+</html>

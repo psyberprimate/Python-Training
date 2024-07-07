@@ -4,6 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <title>Title</title>
+        <link rel="stylesheet" href="static/bill_form.css">
     </head>
     <body>
         <h2> The bill form <br> {{bill_form.bill.amount.data}} - {{bill_form.bill.period.data}} EUR </h2>
@@ -12,6 +13,7 @@
         <p> {{bill_form.list}}</p>
         <hr>
         <form action="/results" method="post"> 
+            <input>
             {%for index, _ in enumerate(bill_form.list)%}
             <p>{{index+1}}# flatmate </p>
             {{bill_form.list[index].name.label}} {{bill_form.list[index].name}}

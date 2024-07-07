@@ -4,8 +4,7 @@ from flask import render_template, request
 from libraries import flatmate, bill
 
 
-"""
-Unfinished - All the classes do not work yet, there's a problem with returning the output from  BillResultPage()
+"""Unfinished - All the classes do not work yet, there's a problem with returning the output from  BillResultPage()
  in  bill_forms = BillFormList(request.form)
 !!!!!FIX!!!!!
 """
@@ -16,16 +15,14 @@ class HomePage(MethodView):
         return render_template("index.html")
 
 class BillFormTemplatePage(MethodView):
-    """
-    Takes the user input for flatmate bill template
+    """Takes the user input for flatmate bill template
     """    
     def get(self):
         bill_form_template = BillFormTemplate()
         return render_template("bill_form_template_page.html", bill_form_template=bill_form_template)
     
 class BillFormPage(MethodView):
-    """
-    Creates bill form based on user input from BillFormTemplatePage()
+    """Creates bill form based on user input from BillFormTemplatePage()
     """    
     def post(self):
         the_bill_template = BillFormTemplate(request.form)
@@ -37,8 +34,7 @@ class BillFormPage(MethodView):
         return render_template("bill_form_page.html", bill_form=bill_list, enumerate=enumerate)
 
 class BillResultPage(MethodView):
-    """
-    Takes user input from bill form and calculates the split bill based on user input,
+    """Takes user input from bill form and calculates the split bill based on user input,
     returns a dictionary with 'name' : amount_to_pay
     """    
     def post(self):
@@ -59,7 +55,6 @@ class BillResultPage(MethodView):
             flatmate_ind = flatmate.Flatmate(flatmate_bill.name.data, int(flatmate_bill.days_in.data))
             pays[flatmate_ind.name] = flatmate_ind.pays(the_bill, flatmates_bill_combined)
         
-        
         return render_template("result_form_page.html", bill_form_result=pays)
 
 class BillFormTemplate(Form):
@@ -69,8 +64,7 @@ class BillFormTemplate(Form):
     button = SubmitField("Make the template")
     
 class BillFormList():
-    """
-    Initialize the class to be posted to the method
+    """Initialize the class to be posted to the method
     """    
     def __init__(self, lenght: int, the_bill: object):
         self.list = [None] * lenght
