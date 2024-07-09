@@ -86,7 +86,8 @@ if __name__ == "__main__":
     #print("Island hopper planner")
     path="island_hopper.txt" #provide a file path
     all_customers_wishlist = []
-    island_hops, all_customers_wishlist =  read_file_to_journey_plan(file_path=path, all_customers_wishlist=all_customers_wishlist)
+    island_hops, all_customers_wishlist =  read_file_to_journey_plan(file_path=path,
+                                                                     all_customers_wishlist=all_customers_wishlist)
     journey, result = planner(island_hops, all_customers_wishlist)
     
     if result:

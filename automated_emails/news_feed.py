@@ -1,12 +1,10 @@
-#API Key for news: a1baf1cffe9a44868ab642bae963c4f3
-
 import requests
 
 class NewsFeed():
     """Class for getting news via newsapi
     """    
     
-    def __init__(self, interest: str, search_for : str = None, from_date: str = None, to_date: str = None, language: str = None, sortBy : str = None ):
+    def __init__(self, interest: str, search_for : str = "", from_date: str = "", to_date: str = "", language: str = "", sortBy : str = "" ):
         """Args:
             interest (str): topic
             search_for (str): title,description,content separated or together
@@ -17,14 +15,15 @@ class NewsFeed():
         """      
         #I dont know if this is very bad Idea to have this many if else conditions in init
         # but its ran only once so maybe not too bad?
+        self.nan = 'nan'
         self.base_url = "https://newsapi.org/v2/everything?"  
         self.interest = "q="+interest+"&"
-        self.search_for = "searchIn="+search_for+"&" if search_for else ""
-        self.from_date = "from="+ from_date +"&" if from_date else ""
-        self.to_date =  "to=" + to_date + "&" if to_date else ""
-        self.language =  "language="+ language + "&" if language else ""
-        self.sortBy = "sortBy=" + sortBy + "&" if sortBy else ""
-        self.api_key = "apiKey=a1baf1cffe9a44868ab642bae963c4f3"
+        self.search_for = "searchIn="+search_for+"&" if not search_for == self.nan else ""
+        self.from_date = "from="+ from_date +"&" if not from_date == self.nan else ""
+        self.to_date =  "to=" + to_date + "&" if not to_date == self.nan else ""
+        self.language =  "language="+ language + "&" if not language == self.nan else ""
+        self.sortBy = "sortBy=" + sortBy + "&" if not sortBy == self.nan else ""
+        self.api_key = "apiKey=putApiKeyHere" # REMEMBER TO DELETE THE API KEY FROM PUBLIC
         
     def get(self) -> str:
         """Makes a request based on constructed url request and 
