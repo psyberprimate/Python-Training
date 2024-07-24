@@ -1,9 +1,8 @@
 import justpy as jp
 from web_pages.default_layout import DefaultLayout
-#from web_pages.page import Page
-from web_pages import page
+from web_pages.page import Page
 
-class About(page.Page):
+class About(Page):
     """Class for About webpage
     """    
     path = "/about"

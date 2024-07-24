@@ -1,10 +1,9 @@
 import justpy as jp
 import dictionary_definitions as definitions
 from web_pages.default_layout import DefaultLayout
-#from web_pages.page import Page
-from web_pages import page
+from web_pages.page import Page
 
-class Dictionary(page.Page):
+class Dictionary(Page):
     """ Class for dictionary webpage than contains the dictionary definitions
     """
     path = "/dictionary"
