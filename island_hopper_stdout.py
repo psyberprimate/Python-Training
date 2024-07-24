@@ -82,7 +82,6 @@ def planner(island_hops: int, all_customers_wishlist : list) -> tuple:
             
         return False
     
-        
     air_travel_count = 0
     journey = [None] * island_hops
     result = plan_journey(journey, air_travel_count, 0)
