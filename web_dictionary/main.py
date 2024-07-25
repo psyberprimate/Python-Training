@@ -22,4 +22,4 @@ if __name__ == "__main__":
     jp.Route(home.Home.path, home.Home.serve)
     jp.Route(about.About.path, about.About.serve)
     jp.Route(dictionary.Dictionary.path, dictionary.Dictionary.serve)
-    jp.justpy()
+    jp.justpy(port=8001)

@@ -2,6 +2,7 @@ import justpy as jp
 import dictionary_definitions as definitions
 from web_pages.default_layout import DefaultLayout
 from web_pages.page import Page
+import requests
 
 class Dictionary(Page):
     """ Class for dictionary webpage than contains the dictionary definitions
@@ -45,7 +46,12 @@ class Dictionary(Page):
     @staticmethod
     def get_definition(widget : object, msg : dict):
         """Gets the definition if there is one for the provided word
-        """        
-        word_definitions = definitions.Definition(term=widget.value).get()#term=widget.input_field.value).get()
-        word_definitions = ["#{}: {}".format(index+1, entry) for index, entry in enumerate(word_definitions)]
-        widget.outputdiv.text = " | ".join(word_definitions)
+        """
+        #using the api - needs to have web_dictonary api running to work
+        req = requests.get("http://127.0.0.1:8000/api?w={}".format(widget.value))
+        data = req.json()
+        widget.outputdiv.text = " | ".join(data['definition'])
+        #using defitions class directly
+        # word_definitions = definitions.Definition(term=widget.value).get()#term=widget.input_field.value).get()
+        # word_definitions = ["#{}: {}".format(index+1, entry) for index, entry in enumerate(word_definitions)]
+        # widget.outputdiv.text = " | ".join(word_definitions)
