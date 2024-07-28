@@ -59,14 +59,15 @@ def select_with_condition(selection : str, operator : str, condition) -> list:
     connection.close()
     return result
     
-def update_value(selection : str, value, filter_key, filter_value):
-    """ Update the 'selection' pass on the table with provided 'value'
+def update_value(update_target : str, value, target_col, target_row):
+    """ Update the 'update_target' pass on the table with provided 'value'
+        where 'target_col' and 'target_row' provide parameters
         table columns: seat_id, taken, price 
     """
     connection = sqlite3.connect("cinema_tickets/cinema.db")
     connection.execute("""
                    UPDATE "Seat" SET "{}"="{}" WHERE "{}"="{}"
-                   """.format(selection, value, filter_key, filter_value))
+                   """.format(update_target, value, target_col, target_row))
     connection.commit()
     connection.close()
 
@@ -89,8 +90,8 @@ if __name__ == "__main__":
     print()
     print(select_with_condition(selection="price", operator=">",condition=90))
     print()
-    update_value(selection="taken",value=int(1), filter_key="seat_id",
-                 filter_value="A3")
+    update_value(update_target="taken",value=int(1), target_col="seat_id",
+                 target_row="A3")
     print()
     delete_record(seat_id="A3")
     
