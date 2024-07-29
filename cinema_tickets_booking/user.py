@@ -7,5 +7,8 @@ class User():
         self.name = name
     
     def buy(self, seat, card):
-        pass
+        """Gets seat and card objects and tries to by
+        a seat for the user
+        """
+          
     
