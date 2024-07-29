@@ -41,15 +41,18 @@ class Seat():
         return result
     
     def occupy(self) -> str:
-        """Check if the table entry is taken or not and if not reserve it
+        """Check if the table entry is taken or not and
+        if not reserve it
         """        
         # since .is_free() returns a list with a tuple(s),
-        #[0][0] to access the exact value of 'taken' -> 1 == taken, 0 == free
+        #[0][0] to access the exact value of 'taken'
+        # -> 1 == taken, 0 == free
         check_if_free = self.is_free()[0][0]
         if not check_if_free == 1: 
             connection = sqlite3.connect(Seat.database_path)
             connection.execute(f"""
-                            UPDATE "Seat" SET "taken"=1 WHERE "seat_id"="{self.seat_id}"
+                            UPDATE "Seat" SET "taken"=1 WHERE
+                            "seat_id"="{self.seat_id}"
                             """)
             connection.commit()
             connection.close()
