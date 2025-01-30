@@ -18,6 +18,7 @@ CREATE_TABLE_3 = """CREATE TABLE IF NOT EXISTS watchlist (
     );"""
 
 SELECT_ALL_MOVIES = "SELECT * FROM movies;"
+SEARCH_FOR_MOVIE = "SELECT * FROM movies WHERE title LIKE ?;"
 INSERT_MOVIES = "INSERT INTO movies (title, release_date) VALUES (?, ?);"
 DELETE_FROM_MOVIES_LIST = "DELETE FROM movies WHERE title = ?;"
 SELECT_UPCOMING_MOVIES = "SELECT * FROM movies WHERE release_date > ?;"
@@ -30,6 +31,7 @@ DELETE_FROM_USER_LIST = "DELETE FROM watchlist WHERE watchlist_username = ? AND 
 ADD_NEW_USER = "INSERT INTO users (username) VALUES (?);"
 DELETE_USER = "DELETE FROM users WHERE username = ?;"
 SHOW_USERS = "SELECT * FROM users;"
+CREATE_INDEX = "CREATE INDEX IF NOT EXISTS idx_movies_released ON movies(release_date);"
 
 connection = sqlite3.connect(
     os.path.join(os.getcwd()+os.path.normcase("/Learning3/MovieWatchList/watchlist.db")))
@@ -39,6 +41,7 @@ def create_tables():
         connection.execute(CREATE_TABLE_1)
         connection.execute(CREATE_TABLE_2)
         connection.execute(CREATE_TABLE_3)
+        connection.execute(CREATE_INDEX)
     
 def close_connection():
     connection.close()
@@ -60,6 +63,11 @@ def view_upcoming_movies():
 def view_all_movies():
     with connection:
         cursor = connection.execute(SELECT_ALL_MOVIES)
+        return cursor.fetchall()
+
+def search_for_movie(search_keyword : str):
+    with connection:
+        cursor = connection.execute(SEARCH_FOR_MOVIE, (f"%{search_keyword}%", ))
         return cursor.fetchall()
 
 def add_watched_movie(viewer : str, movie_id : str):

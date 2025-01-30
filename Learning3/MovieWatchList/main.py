@@ -54,6 +54,14 @@ def show_all_movies():
     print_menu(title="")
     movies = database.view_all_movies()
     print_movie_list(movies)
+    
+def search_for_movie():
+    print_menu(title="Search for a movie")
+    print_menu(title="")
+    search_keyword = input("Search for a with a keyword: ")
+    movies = database.search_for_movie(search_keyword=search_keyword)
+    print_menu(title="Found")
+    print_movie_list(movies)
 
 def add_watched_movie():
     viewer = input("Give the user's name: ")
@@ -130,8 +138,8 @@ def program_flow():
         print_menu(title="")
         print("Select one of the following options: ")
         print("\n1) Add new movie.\n2) View upcoming movies.\n3) View all movies. \
-              \n4) Add watched movie. \n5) View watched movies. \n6) Show user settings. \
-                  \n7) Exit.")
+              \n4) Search for a movie. \n5) Add watched movie. \n6) View watched movies.  \
+              \n7) Show user settings. \n8) Exit.")
         try:
             user_input = int(input("\nYour selection: "))
         except:
@@ -145,16 +153,18 @@ def program_flow():
             case 3:
                 show_all_movies()
             case 4:
-                add_watched_movie()
+                search_for_movie()
             case 5:
-                show_watched_movies()
+                add_watched_movie()
             case 6:
-                user_settings()
+                show_watched_movies()
             case 7:
+                user_settings()
+            case 8:
                 print_menu(title="Goodbye")
                 break
             case _:
-                print_menu(title="Select between choices 1-7")
+                print_menu(title="Select between choices 1-8")
 
 if __name__ == "__main__":
     program_flow()
