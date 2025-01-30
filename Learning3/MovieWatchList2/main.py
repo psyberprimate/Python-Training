@@ -6,7 +6,9 @@ login_file_path = "/Learning3/MovieWatchList2/login.json"
 
 
 class MenuController():
-
+    """A class for controlling the user menu and
+    calling WatchList class via Connection class
+    """    
     def __init__(self, login_file_path : str):
         self.connection = Connection(login_file_path=login_file_path)
         self.watchlist = WatchList(connection_instance=self.connection)
@@ -121,7 +123,6 @@ class MenuController():
         title = input("Movie id: ")
         self.watchlist.delete_from_user_list(user_name=user_name, title = title)
     
-    
     def user_settings(self):
         MenuController.print_menu(title="User settings menu")
         while(True):
@@ -184,6 +185,7 @@ class MenuController():
                     break
                 case _:
                     MenuController.print_menu(title="Select between choices 1-8")
+
 
 if __name__ == "__main__":
     menu = MenuController(login_file_path=login_file_path)

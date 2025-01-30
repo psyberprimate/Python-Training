@@ -7,7 +7,7 @@ from watchlist import WatchList
 login_file_path = "/Learning3/MovieWatchList2/login.json"
 
 class Connection():
-    """Class for connecting to postgreSQL
+    """Class for connecting to postgreSQL. Takes json file 'login.json' for connection configurations.
     """
     def __init__(self, login_file_path : str = None):
             with open(os.path.join(

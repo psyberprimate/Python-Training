@@ -2,7 +2,9 @@ import datetime
 import os
 
 class WatchList():
-    """A class for containing the functions for PostgresSQL database interactions
+    """A class for containing the functions for PostgresSQL database interactions.
+    Where __init__ need to have class passed to it with self.connection with database
+    connection.
     """
     #class attributes
     CREATE_TABLE_1 = """CREATE TABLE IF NOT EXISTS movies (
@@ -37,18 +39,17 @@ class WatchList():
     CREATE_INDEX = "CREATE INDEX IF NOT EXISTS idx_movies_released ON movies(release_date);"
     
     def __init__(self, connection_instance):
+        #database connection
         self.connection = connection_instance.connection
 
     def create_tables(self):
         #    I do not know if with is always better to use than so for practice...
-                
         # with self.connection:
         #     with self.connection.cursor() as cursor:
         #         cursor.execute(WatchList.CREATE_TABLE_1)
         #         cursor.execute(WatchList.CREATE_TABLE_2)
         #         cursor.execute(WatchList.CREATE_TABLE_3)
         #         cursor.execute(WatchList.CREATE_INDEX)
-        
         cursor = self.connection.cursor()
         cursor.execute(WatchList.CREATE_TABLE_1)
         cursor.execute(WatchList.CREATE_TABLE_2)
@@ -149,7 +150,6 @@ class WatchList():
         self.connection.commit()
         cursor.close()
         
-
     def delete_user(self, delete_user : str):
         # with self.connection:
         #     with self.connection.cursor() as cursor:
@@ -159,5 +159,3 @@ class WatchList():
         self.connection.commit()
         cursor.close()
         
-if __name__ == '__main__':
-    WatchList.create_tables()
