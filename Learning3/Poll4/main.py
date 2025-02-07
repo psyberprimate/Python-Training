@@ -125,7 +125,7 @@ class MenuController():
                     local_date = date.strftime("%Y-%m-%d %H:%M:%S")
                     MenuController.print_menu(
                         title=f"{vote[0]} on {local_date}")
-                    
+
     def plot_form(self):
         input_prompt = "Do you want to see the votes in \
 terminal or plot? Type: t/p: "
@@ -135,15 +135,15 @@ terminal or plot? Type: t/p: "
             return True
         else:
             return False
-            
-    def plot_votes_for_poll(self, poll_options : list[tuple]):
+
+    def plot_votes_for_poll(self, poll_options: list[tuple]):
         _ = plotting.create_pie_chart(options=poll_options)
         plt.show()
         save_fig = input("Save figure?: Write 'True': ")
         save_bool = True if save_fig.upper() == 'TRUE' else False
         _ = plotting.create_bar_plot(options=poll_options, save_fig=save_bool)
         plt.show()
-        
+
     def show_votes_for_poll(self):
         self.show_open_polls()
         try:
@@ -155,7 +155,7 @@ terminal or plot? Type: t/p: "
             total_votes = sum(votes_per_option)
             options_count = [(option, count) for option, count
                              in zip(poll_options, votes_per_option)]
-            
+
             if self.plot_form():
                 MenuController.print_menu(title="")
                 for (option, count) in options_count:

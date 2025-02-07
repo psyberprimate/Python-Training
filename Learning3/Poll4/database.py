@@ -44,15 +44,15 @@ def get_cursor(database_connection):
     with database_connection:
         with database_connection.cursor() as cursor:
             yield cursor
-         
-         
+
+
 def create_tables(database_connection):
     with get_cursor(database_connection) as cursor:
         cursor.execute(CREATE_TABLE_1)
         cursor.execute(CREATE_TABLE_2)
-        cursor.execute(CREATE_TABLE_3)         
-    
-    
+        cursor.execute(CREATE_TABLE_3)
+
+
 def create_poll(database_connection, title: str, owner: str):
     with get_cursor(database_connection) as cursor:
         cursor.execute(CREATE_POLL_RETURN_ID, (title, owner))
