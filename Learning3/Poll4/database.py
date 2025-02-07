@@ -1,4 +1,5 @@
 from contextlib import contextmanager
+import psycopg2
 
 # class attributes
 CREATE_TABLE_1 = """CREATE TABLE IF NOT EXISTS polls (
@@ -29,22 +30,29 @@ INSERT_OPTION_RETURN_ID = "INSERT INTO options (option, poll_id) VALUES (%s, %s)
 INSERT_VOTE = "INSERT INTO votes (voter_name, option_id, vote_timestamp) VALUES (%s, %s, %s);"
 SELECT_OPTION = "SELECT * FROM options WHERE id = %s;"
 SELECT_VOTES_FOR_OPTION = "SELECT * FROM votes WHERE option_id = %s;"
+SELECT_POLLS = "SELECT * FROM polls;"
+SELECT_OPTIONS_IN_POLL = """
+SELECT options.text, SUM(votes.option_id) FROM options
+JOIN polls ON options.poll_id = polls.id
+JOIN votes ON options.id = votes.option_id
+WHERE polls.id = %s
+GROUP BY options.text"""
 
 
 @contextmanager
-def get_cursor(connection):
-    with connection:
-        with connection.cursor() as cursor:
+def get_cursor(database_connection):
+    with database_connection:
+        with database_connection.cursor() as cursor:
             yield cursor
-
-
+         
+         
 def create_tables(database_connection):
     with get_cursor(database_connection) as cursor:
         cursor.execute(CREATE_TABLE_1)
         cursor.execute(CREATE_TABLE_2)
-        cursor.execute(CREATE_TABLE_3)
-
-
+        cursor.execute(CREATE_TABLE_3)         
+    
+    
 def create_poll(database_connection, title: str, owner: str):
     with get_cursor(database_connection) as cursor:
         cursor.execute(CREATE_POLL_RETURN_ID, (title, owner))
