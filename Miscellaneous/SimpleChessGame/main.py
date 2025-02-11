@@ -1,9 +1,9 @@
-import pieces
-import chessboard
-import user_interface
+from user_interface import UserInterface
 
 def play():
-    pass
+    
+    interface = UserInterface()
+    interface.program_flow()
 
 if __name__ == "__main__":
     play()
