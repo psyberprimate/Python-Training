@@ -1,13 +1,13 @@
 import pieces
-
+from typing import Tuple, Any
 
 class ChessBoard():
 
     def __init__(self):
         self.x = 8
         self.y = 8
-        self.table = []
-        self.move : int = 0
+        self.state = []
+        self.move : int = 1
         self.board_state = None
         self.initial_state = {"6_0": {"type" : pieces.Pawn, "color" : "B"},
                               "6_1": {"type" : pieces.Pawn, "color" : "B"},
@@ -46,8 +46,24 @@ class ChessBoard():
     def make_board(self):
         """Makes the "board" for the pieces as 2-d list
         """
-        self.table = [[self.assemble_pieces((y, x))
+        self.state = [[self.assemble_pieces((y, x))
                        for x in range(self.x)] for y in range(self.y)]
+        
+        
+    def get_pieces(self) -> Tuple[list, list]:
+        """Get the pieces each player has
+        """
+        white_list = []
+        black_list = []
+        for j in range(self.y-1, -1, -1):
+            for i in range(0, self.x):
+                if self.state[j][i] is not None:
+                    tile = self.state[j][i].get_info()
+                    if tile["color"] == "W":
+                        white_list.append(tile)
+                    else:
+                        black_list.append(tile)
+        return white_list, black_list
 
     def assemble_pieces(self, y_x: tuple):
         """Check piece type based on location and whether
@@ -61,8 +77,17 @@ class ChessBoard():
         else:
             return None
         
-    def update_board(self):
-        pass
+    def update_board(self, board_state : object, origin_index : tuple, target_index : tuple) -> Tuple[list, Any]:
+        updated_piece = board_state[origin_index[0]][origin_index[1]]
+        removed_piece = board_state[target_index[0]][target_index[1]]
+        if removed_piece is not None:
+            removed_info = removed_piece.get_info()
+        else:
+            removed_info = None
+        board_state[origin_index[0]][origin_index[1]] = None
+        board_state[target_index[0]][target_index[1]] = updated_piece
+        return board_state, removed_info
+        
     
     def print_board(self):
         self.print_line("SIMPLE CHESS", " ", "-", 39)
@@ -70,14 +95,14 @@ class ChessBoard():
         self.print_line("FIGHT", " ", ".", 39)
         print()
         print("---  a   b   c   d   e   f   g   h  ---")
-        for j in range(self.y - 1, -1, -1):
+        for j in range(self.y-1, -1, -1):
             print(f"{j+1} |", end=" ")
             for i in range(0, self.x):
-                piece = self.table[j][i]
+                piece = self.state[j][i]
                 if piece is None:
                     print(" o ", end=" ")
                 else:
-                    print(f"{self.table[j][i].get_symbol()}_{self.table[j][i].get_color().lower()}", end =" ")
+                    print(f"{self.state[j][i].get_symbol()}_{self.state[j][i].get_color().lower()}", end =" ")
             print(f"| {j+1}")
         print("---------------------------------------")
         print("  |  a   b   c   d   e   f   g   h  | ")            

@@ -40,7 +40,8 @@ class UserInterface():
         board = chessboard.ChessBoard()
         board.make_board()
         turn_white = True
-         
+        white_player_pieces, black_player_pieces = board.get_pieces()
+        
         while(True):
             board.print_board()
             if turn_white:
@@ -60,12 +61,27 @@ class UserInterface():
             else:
                 print(chosen_piece)
                 print(target_tile)
-                print(board.table[chosen_piece[0]][chosen_piece[1]].get_info()) #.check_move(target_tile)
-                print(board.table[chosen_piece[0]][chosen_piece[1]].get_position())
-                if board.table[chosen_piece[0]][chosen_piece[1]].check_move(target_tile):
-                    print(f"Moving {board.table[chosen_piece[0]][chosen_piece[1]].get_type()} to {target_tile}")
-                turn_white = False
-                board.move += 1
+                print(board.state[chosen_piece[0]][chosen_piece[1]].get_info()) #.check_move(target_tile)
+                print(board.state[chosen_piece[0]][chosen_piece[1]].get_position())
+                if board.state[chosen_piece[0]][chosen_piece[1]].check_move(target_tile, board.state):
+                    table, piece_info = board.update_board(board.state, chosen_piece, target_tile)
+                    board.state = table
+                    print(f"Moving {board.state[target_tile[0]][target_tile[1]].get_type()}", end="")
+                    print(f"to {target_tile}")
+                    if piece_info is None:
+                        pass
+                    else:
+                        if turn_white:
+                            black_player_pieces.remove(piece_info)
+                            print(f"Black player loses: {piece_info['type']}")
+                        else:
+                            white_player_pieces.remove(piece_info)
+                            print(f"White player loses: {piece_info['type']}")
+                    turn_white = not turn_white
+                    board.move += 1
+                else:
+                    print(f"Cannot move {board.state[chosen_piece[0]][chosen_piece[1]].get_type()}", end="")
+                    print(f"to {target_tile}")
         UserInterface.print_line("Back to menu", ' ', '-', 39)
     
     @staticmethod
