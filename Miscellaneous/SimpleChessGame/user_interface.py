@@ -2,20 +2,20 @@ import chessboard
 
 
 class UserInterface():
-    
+
     MENU_MESSAGE = """1) Play chess.\n2) Get chess moves from previous game.\n3) Exit.
 \nYour input: """
-    
+
     def __init__(self):
-        self.OPTIONS = {"1" : self.play_chess,
-                        "2" : self.get_moves,
+        self.OPTIONS = {"1": self.play_chess,
+                        "2": self.get_moves,
                         }
-        
+
     @staticmethod
-    def print_line(title: str, sepator : str,
-                   fill_char : str, txt_lenght : str = 40):
+    def print_line(title: str, sepator: str,
+                   fill_char: str, txt_lenght: str = 40):
         """ Prints a line of text based on user input
-        """        
+        """
         def see_if_rounded(txt_lenght):
             return round(number=txt_lenght, ndigits=None) < txt_lenght or \
                 round(number=txt_lenght, ndigits=None) > txt_lenght
@@ -33,44 +33,48 @@ class UserInterface():
             title += fill_char if odd else ''
         else:
             title = f''.join(f'{fill_char}'*txt_lenght*2)
-        print(title)    
-    
+        print(title)
+
     def play_chess(self):
-        
+
         board = chessboard.ChessBoard()
         board.make_board()
         turn_white = True
         white_player_pieces, black_player_pieces = board.get_pieces()
-        
-        while(True):
+
+        while (True):
             board.print_board()
             if turn_white:
-                print("White Player. Enter your move, for example: A2 to A3. To quit write 'quit'")
+                print(
+                    "White Player. Enter your move, for example: A2 to A3. To quit write 'quit'")
                 player_input = input("Starting tile, End tile: ")
             else:
-                print("Black Player. Enter your move, for example: A2 to A3. To quit write 'quit'")
+                print(
+                    "Black Player. Enter your move, for example: A2 to A3. To quit write 'quit'")
                 player_input = input("Starting tile, End tile: ")
             if player_input.lower() == "quit":
                 break
-            
             try:
-                chosen_piece, target_tile = UserInterface.parse_input(player_input)
+                chosen_piece, target_tile = UserInterface.parse_input(
+                    player_input)
             except (IndexError, ValueError) as errors:
                 print(errors)
                 print("Incorrect input: Please provide commands in format: B1 to C4")
             else:
                 print(chosen_piece)
                 print(target_tile)
-                print(board.state[chosen_piece[0]][chosen_piece[1]].get_info()) #.check_move(target_tile)
-                print(board.state[chosen_piece[0]][chosen_piece[1]].get_position())
+                # .check_move(target_tile)
+                print(board.state[chosen_piece[0]][chosen_piece[1]].get_info())
+                print(board.state[chosen_piece[0]]
+                      [chosen_piece[1]].get_position())
                 if board.state[chosen_piece[0]][chosen_piece[1]].check_move(target_tile, board.state):
-                    table, piece_info = board.update_board(board.state, chosen_piece, target_tile)
+                    table, piece_info = board.update_board(
+                        board.state, chosen_piece, target_tile)
                     board.state = table
-                    print(f"Moving {board.state[target_tile[0]][target_tile[1]].get_type()}", end="")
+                    print(
+                        f"Moving {board.state[target_tile[0]][target_tile[1]].get_type()}", end="")
                     print(f"to {target_tile}")
-                    if piece_info is None:
-                        pass
-                    else:
+                    if piece_info is not None:
                         if turn_white:
                             black_player_pieces.remove(piece_info)
                             print(f"Black player loses: {piece_info['type']}")
@@ -80,15 +84,16 @@ class UserInterface():
                     turn_white = not turn_white
                     board.move += 1
                 else:
-                    print(f"Cannot move {board.state[chosen_piece[0]][chosen_piece[1]].get_type()}", end="")
+                    print(
+                        f"Cannot move {board.state[chosen_piece[0]][chosen_piece[1]].get_type()}", end="")
                     print(f"to {target_tile}")
         UserInterface.print_line("Back to menu", ' ', '-', 39)
-    
+
     @staticmethod
-    def parse_input(input : str) -> tuple[tuple]:
-        
+    def parse_input(input: str) -> tuple[tuple]:
+
         split_str = input.split()
-        piece = split_str[0] 
+        piece = split_str[0]
         destination = split_str[2]
         start_column = None
         start_row = int(piece[1])-1
@@ -114,7 +119,7 @@ class UserInterface():
                 start_column = 7
             case _:
                 start_column = None
-                
+
         match destination[0].lower():
             case "a":
                 end_column = 0
@@ -134,12 +139,12 @@ class UserInterface():
                 end_column = 7
             case _:
                 end_column = None
-        
+
         return ((start_row, start_column), (end_row, end_column))
-    
+
     def get_moves(self):
         print("To be implemented")
-        
+
     def program_flow(self):
         UserInterface.print_line("Welcome to Simple Chess!", " ", "*", 39)
         while (option := input(UserInterface.MENU_MESSAGE)) != "3":
@@ -148,6 +153,7 @@ class UserInterface():
             except KeyError:
                 print("Please select between 1-3.")
         UserInterface.print_line("Goodbye", " ", "#", 39)
+
 
 if __name__ == "__main__":
     pass
