@@ -9,7 +9,8 @@ class ChessBoard():
         self.y = 8
         self.state = []
         self.move: int = 1
-        self.board_state = None
+        self.white_king: tuple = None
+        self.black_king: tuple = None
         self.initial_state = {"6_0": {"type": pieces.Pawn, "color": "B"},
                               "6_1": {"type": pieces.Pawn, "color": "B"},
                               "6_2": {"type": pieces.Pawn, "color": "B"},
@@ -73,20 +74,59 @@ class ChessBoard():
         piece = self.initial_state[comparison_key] \
             if comparison_key in self.initial_state.keys() else None
         if piece:
+            if piece["type"] == pieces.King:
+                if piece["color"] == "W":
+                    self.white_king = y_x[0], y_x[1]
+                else:
+                    self.black_king = y_x[0], y_x[1]
             return piece["type"](position=(y_x[0], y_x[1]), color=piece["color"])
         else:
             return None
 
-    def update_board(self, board_state: object, origin_index: tuple, target_index: tuple) -> Tuple[list, Any]:
-        updated_piece = board_state[origin_index[0]][origin_index[1]]
-        removed_piece = board_state[target_index[0]][target_index[1]]
+    def update_board(self, origin_index: tuple, target_index: tuple) -> Tuple[list, Any]:
+        updated_piece = self.state[origin_index[0]][origin_index[1]]
+        removed_piece = self.state[target_index[0]][target_index[1]]
         if removed_piece is not None:
             removed_info = removed_piece.get_info()
         else:
             removed_info = None
-        board_state[origin_index[0]][origin_index[1]] = None
-        board_state[target_index[0]][target_index[1]] = updated_piece
-        return board_state, removed_info
+        self.state[origin_index[0]][origin_index[1]] = None
+        self.state[target_index[0]][target_index[1]] = updated_piece
+        self.state[target_index[0]][target_index[1]].set_position(target_index)
+        print(f"updated piece information: {updated_piece.get_info()}")
+        if self.state[target_index[0]][target_index[1]].get_type() == "king":
+            if self.state[target_index[0]][target_index[1]].get_color() == "W":
+                self.white_king = self.state[target_index[0]][target_index[1]].get_position()
+            else:
+                self.black_king = self.state[target_index[0]][target_index[1]].get_position()
+        return removed_info
+
+    def check_board_state(self):
+
+        game_over = False
+
+        if self.state[self.white_king[0]][self.white_king[1]].is_checked(self.state):
+            print("White king is in check!")
+            print("Protect the king")
+            if self.state[self.white_king[0]][self.white_king[1]].is_checkmate(self.state):
+                print("Checkmate! Black player wins!")
+                game_over = True
+        if self.state[self.black_king[0]][self.black_king[1]].is_checked(self.state):
+            print("Black king is in check!")
+            print("Protect the king")
+            if self.state[self.black_king[0]][self.black_king[1]].is_checkmate(self.state):
+                print("Checkmate! White player wins!")
+                game_over = True
+
+        if self.state[self.white_king[0]][self.white_king[1]].is_stalemate(self.state):
+            print("Statemate! White player cannot move!")
+            game_over = True
+
+        if self.state[self.black_king[0]][self.black_king[1]].is_stalemate(self.state):
+            print("Statemate! Black player cannot move!")
+            game_over = True
+
+        return game_over
 
     def print_board(self):
         self.print_line("SIMPLE CHESS", " ", "-", 39)
@@ -106,7 +146,7 @@ class ChessBoard():
             print(f"| {j+1}")
         print("---------------------------------------")
         print("  |  a   b   c   d   e   f   g   h  | ")
-        
+
     def print_game_status(self):
         pass
 

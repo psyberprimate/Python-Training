@@ -44,6 +44,10 @@ class UserInterface():
 
         while (True):
             board.print_board()
+            if board.check_board_state():
+                UserInterface.print_line("Game well played!", "@", "#", 39)
+                break
+            
             if turn_white:
                 print(
                     "White Player. Enter your move, for example: A2 to A3. To quit write 'quit'")
@@ -59,34 +63,33 @@ class UserInterface():
                     player_input)
             except (IndexError, ValueError) as errors:
                 print(errors)
-                print("Incorrect input: Please provide commands in format: B1 to C4")
+                print("Incorrect input: Please provide commands in format: B1 to C4 (column/row)")
             else:
+                player_color = "W" if turn_white else "B"
                 print(chosen_piece)
                 print(target_tile)
-                # .check_move(target_tile)
-                print(board.state[chosen_piece[0]][chosen_piece[1]].get_info())
-                print(board.state[chosen_piece[0]]
-                      [chosen_piece[1]].get_position())
-                if board.state[chosen_piece[0]][chosen_piece[1]].check_move(target_tile, board.state):
-                    table, piece_info = board.update_board(
-                        board.state, chosen_piece, target_tile)
-                    board.state = table
-                    print(
-                        f"Moving {board.state[target_tile[0]][target_tile[1]].get_type()}", end="")
-                    print(f"to {target_tile}")
-                    if piece_info is not None:
-                        if turn_white:
-                            black_player_pieces.remove(piece_info)
-                            print(f"Black player loses: {piece_info['type']}")
-                        else:
-                            white_player_pieces.remove(piece_info)
-                            print(f"White player loses: {piece_info['type']}")
-                    turn_white = not turn_white
-                    board.move += 1
+                if board.state[chosen_piece[0]][chosen_piece[1]] is not None:
+                    # print(board.state[chosen_piece[0]][chosen_piece[1]].get_info())
+                    # print(board.state[chosen_piece[0]]
+                    #       [chosen_piece[1]].get_position())
+                    if board.state[chosen_piece[0]][chosen_piece[1]].check_move(target_tile, board.state, player_color):
+                        removed_piece_info = board.update_board(chosen_piece, target_tile)
+                        print(f"Moving {board.state[target_tile[0]][target_tile[1]].get_type()}", end="")
+                        print(f"to {target_tile}")
+                        if removed_piece_info is not None:
+                            if turn_white:
+                                black_player_pieces.remove(removed_piece_info)
+                                print(f"Black player loses: {removed_piece_info['type']}")
+                            else:
+                                white_player_pieces.remove(removed_piece_info)
+                                print(f"White player loses: {removed_piece_info['type']}")
+                        turn_white = not turn_white
+                        board.move += 1
+                    else:
+                        print(f"Cannot move {board.state[chosen_piece[0]][chosen_piece[1]].get_type()}", end="")
+                        print(f"to {target_tile}")
                 else:
-                    print(
-                        f"Cannot move {board.state[chosen_piece[0]][chosen_piece[1]].get_type()}", end="")
-                    print(f"to {target_tile}")
+                    print(f"Board index is empty - Nothing to move")
         UserInterface.print_line("Back to menu", ' ', '-', 39)
 
     @staticmethod
@@ -138,7 +141,7 @@ class UserInterface():
             case "h":
                 end_column = 7
             case _:
-                end_column = None
+                end_column = None     
 
         return ((start_row, start_column), (end_row, end_column))
 
