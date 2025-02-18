@@ -1,6 +1,7 @@
 import chessboard
 import chesspiece
 
+
 class UserInterface():
 
     MENU_MESSAGE = """1) Play chess.\n2) Get chess moves from previous game.\n3) Exit.
@@ -15,6 +16,13 @@ class UserInterface():
     def print_line(title: str, sepator: str,
                    fill_char: str, txt_lenght: str = 40):
         """ Prints a line of text based on user input
+
+         title is title of the text.
+         seperator: str (separates the space between 
+         the text and filler letters).
+         fill_char: str (fills the empty parts of str lenght).
+         txt_lenght (lenght of the text)
+
         """
         def see_if_rounded(txt_lenght):
             return round(number=txt_lenght, ndigits=None) < txt_lenght or \
@@ -49,22 +57,20 @@ class UserInterface():
                 break
 
             if turn_white:
-                print(
-                    "White Player. Enter your move, for example: A2 to A3. To quit write 'quit'")
+                print("White Player. Enter your move, for example: A2 to A3. To quit write 'quit'")
                 player_input = input("Starting tile, End tile: ")
             else:
-                print(
-                    "Black Player. Enter your move, for example: A2 to A3. To quit write 'quit'")
+                print("Black Player. Enter your move, for example: A2 to A3. To quit write 'quit'")
                 player_input = input("Starting tile, End tile: ")
             if player_input.lower() == "quit":
                 break
             try:
                 chosen_piece, target_tile = UserInterface.parse_input(
                     player_input)
-            except (IndexError, ValueError) as errors:
-                print(errors)
-                print(
-                    "Incorrect input: Please provide commands in format: B1 to C4 (column/row)")
+            except (IndexError, ValueError) as _:
+                # print(errors)
+                print("Incorrect input: Please provide commands \
+                    in format: B1 to C4 (column/row)")
             else:
                 player_color = "W" if turn_white else "B"
                 print(chosen_piece)
@@ -77,7 +83,7 @@ class UserInterface():
                         removed_piece_info = board.update_board(
                             chosen_piece, target_tile)
                         print(
-                            f"Moving {board.state[target_tile[0]][target_tile[1]].get_type()}", end="")
+                            f"Moving {board.state[target_tile[0]][target_tile[1]].get_info()['type']}", end="")
                         print(f"to {target_tile}")
                         if removed_piece_info is not None:
                             if turn_white:
@@ -92,7 +98,7 @@ class UserInterface():
                         board.move += 1
                     else:
                         print(
-                            f"Cannot move {board.state[chosen_piece[0]][chosen_piece[1]].get_type()}", end="")
+                            f"Cannot move {board.state[chosen_piece[0]][chosen_piece[1]].get_info()['type']}", end="")
                         print(f"to {target_tile}")
                 else:
                     print(f"Board index is empty - Nothing to move")
@@ -108,46 +114,12 @@ class UserInterface():
         start_row = int(piece[1])-1
         end_column = None
         end_row = int(destination[1])-1
-        # match piece  and destination letters
-        match piece[0].lower():
-            case "a":
-                start_column = 0
-            case "b":
-                start_column = 1
-            case "c":
-                start_column = 2
-            case "d":
-                start_column = 3
-            case "e":
-                start_column = 4
-            case "f":
-                start_column = 5
-            case "g":
-                start_column = 6
-            case "h":
-                start_column = 7
-            case _:
-                start_column = None
+        letters = {"a": 0, "b": 1, "c": 2, "d": 3,
+                   "e": 4, "f": 5, "g": 6, "h": 7}
 
-        match destination[0].lower():
-            case "a":
-                end_column = 0
-            case "b":
-                end_column = 1
-            case "c":
-                end_column = 2
-            case "d":
-                end_column = 3
-            case "e":
-                end_column = 4
-            case "f":
-                end_column = 5
-            case "g":
-                end_column = 6
-            case "h":
-                end_column = 7
-            case _:
-                end_column = None
+        # match piece  and destination letters
+        start_column = letters.get(piece[0].lower())
+        end_column = letters.get(destination[0].lower())
 
         return ((start_row, start_column), (end_row, end_column))
 
