@@ -10,8 +10,8 @@ class ChessBoard():
         self.y = 8
         self.state = []
         self.move: int = 1
-        self.white_king: tuple = None
-        self.black_king: tuple = None
+        self.w_king: tuple = None
+        self.b_king: tuple = None
         self.initial_state = chesspieces
 
     def make_board(self):
@@ -44,9 +44,9 @@ class ChessBoard():
         if piece:
             if piece["type"] == pieces.King:
                 if piece["color"] == "W":
-                    self.white_king = y_x[0], y_x[1]
+                    self.w_king = y_x[0], y_x[1]
                 else:
-                    self.black_king = y_x[0], y_x[1]
+                    self.b_king = y_x[0], y_x[1]
             return piece["type"](position=(y_x[0], y_x[1]), color=piece["color"])
         else:
             return None
@@ -56,7 +56,7 @@ class ChessBoard():
         setting the old position to None and new position as
         updated position. If a piece was removed from new position also
         returns removed_info as not None. Also keep the both colors kings
-        locations up to date in self.white_king and self.black_king. 
+        locations up to date in self.w_king and self.b_king. 
 
         Returns: None or dictionary of chesspiece info
         """
@@ -71,16 +71,16 @@ class ChessBoard():
         self.state[origin[0]][origin[1]] = None
         self.state[target[0]][target[1]] = updated_piece
         self.state[target[0]][target[1]].set_position(target)
-        
+
         print(f"updated piece information: {updated_piece.get_info()}")
 
         if self.state[target[0]][target[1]].get_info()['type'] == "king":
             if self.state[target[0]][target[1]].get_info()['color'] == "W":
-                self.white_king = self.state[target[0]
-                                             ][target[1]].get_position()
+                self.w_king = self.state[target[0]
+                                         ][target[1]].get_position()
             else:
-                self.black_king = self.state[target[0]
-                                             ][target[1]].get_position()
+                self.b_king = self.state[target[0]
+                                         ][target[1]].get_position()
         return removed_info
 
     def check_board_state(self):
@@ -95,25 +95,25 @@ class ChessBoard():
         """
         game_over = False
 
-        if self.state[self.white_king[0]][self.white_king[1]].is_checked(self.state):
+        if self.state[self.w_king[0]][self.w_king[1]].is_checked(self.state):
             print("White king is in check!")
             print("Protect the king")
-            if self.state[self.white_king[0]][self.white_king[1]].is_checkmate(self.state):
+            if self.state[self.w_king[0]][self.w_king[1]].is_checkmate(self.state):
                 print("Checkmate! Black player wins!")
                 game_over = True
 
-        if self.state[self.black_king[0]][self.black_king[1]].is_checked(self.state):
+        if self.state[self.b_king[0]][self.b_king[1]].is_checked(self.state):
             print("Black king is in check!")
             print("Protect the king")
-            if self.state[self.black_king[0]][self.black_king[1]].is_checkmate(self.state):
+            if self.state[self.b_king[0]][self.b_king[1]].is_checkmate(self.state):
                 print("Checkmate! White player wins!")
                 game_over = True
 
-        if self.state[self.white_king[0]][self.white_king[1]].is_stalemate(self.state):
+        if self.state[self.w_king[0]][self.w_king[1]].is_stalemate(self.state):
             print("Statemate! White player cannot move!")
             game_over = True
 
-        if self.state[self.black_king[0]][self.black_king[1]].is_stalemate(self.state):
+        if self.state[self.b_king[0]][self.b_king[1]].is_stalemate(self.state):
             print("Statemate! Black player cannot move!")
             game_over = True
 
