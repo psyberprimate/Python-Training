@@ -50,6 +50,29 @@ class Piece:
         else:
             print(f"Cannot move pieces not belonging own color")
             return False
+        
+    def _rook_bishop_queen_move_check(self, board_state: list):
+        """Combined move checking for rook, bishop and queen. Between
+        the pieces only the allowed tile movement differs, the logic for
+        checking viable moves is same.
+        """        
+        row, col = self.get_position()
+        viable_moves = []
+        
+        for row2, col2 in self.TILE_MOVEMENTS:
+            trgt_row, trgt_col = row + row2, col + col2
+            while 0 <= trgt_row < 8 and 0 <= trgt_col < 8:
+                if board_state[trgt_row][trgt_col] is None:
+                    viable_moves.append((trgt_row, trgt_col))
+                else:
+                    if board_state[trgt_row][trgt_col].get_info()['color'] \
+                            != self.get_info()['color']:
+                        viable_moves.append((trgt_row, trgt_col))
+                    break
+                trgt_row += row2
+                trgt_col += col2
+        return viable_moves
+            
 
 
 class Pawn(Piece):
@@ -117,23 +140,7 @@ class Bishop(Piece):
         self.TILE_MOVEMENTS = [(-1, 1), (1, 1), (-1, -1), (1, -1)]
 
     def _get_moves(self, board_state: list) -> list:
-
-        row, col = self.get_position()
-        viable_moves = []
-
-        for row2, col2 in self.TILE_MOVEMENTS:
-            trgt_row, trgt_col = row + row2, col + col2
-            while 0 <= trgt_row < 8 and 0 <= trgt_col < 8:
-                if board_state[trgt_row][trgt_col] is None:
-                    viable_moves.append((trgt_row, trgt_col))
-                else:
-                    if board_state[trgt_row][trgt_col].get_info()['color'] \
-                            != self.get_info()['color']:
-                        viable_moves.append((trgt_row, trgt_col))
-                    break
-                trgt_row += row2
-                trgt_col += col2
-        return viable_moves
+        return self._rook_bishop_queen_move_check(board_state)
 
 
 class Knight(Piece):
@@ -171,23 +178,7 @@ class Rook(Piece):
         self.TILE_MOVEMENTS = [(-1, 0), (0, 1), (1, 0), (0, -1)]
 
     def _get_moves(self, board_state: list) -> list:
-
-        row, col = self.get_position()
-        viable_moves = []
-
-        for row2, col2 in self.TILE_MOVEMENTS:
-            trgt_row, trgt_col = row + row2, col + col2
-            while 0 <= trgt_row < 8 and 0 <= trgt_col < 8:
-                if board_state[trgt_row][trgt_col] is None:
-                    viable_moves.append((trgt_row, trgt_col))
-                else:
-                    if board_state[trgt_row][trgt_col].get_info()['color'] \
-                            != self.get_info()['color']:
-                        viable_moves.append((trgt_row, trgt_col))
-                    break
-                trgt_row += row2
-                trgt_col += col2
-        return viable_moves
+        return self._rook_bishop_queen_move_check(board_state)
 
 
 class Queen(Piece):
@@ -200,23 +191,7 @@ class Queen(Piece):
                                (-1, 0), (0, 1), (1, 0), (0, -1)]
 
     def _get_moves(self, board_state: list) -> list:
-
-        row, col = self.get_position()
-        viable_moves = []
-
-        for row2, col2 in self.TILE_MOVEMENTS:
-            trgt_row, trgt_col = row + row2, col + col2
-            while 0 <= trgt_row < 8 and 0 <= trgt_col < 8:
-                if board_state[trgt_row][trgt_col] is None:
-                    viable_moves.append((trgt_row, trgt_col))
-                else:
-                    if board_state[trgt_row][trgt_col].get_info()['color'] \
-                            != self.get_info()['color']:
-                        viable_moves.append((trgt_row, trgt_col))
-                    break
-                trgt_row += row2
-                trgt_col += col2
-        return viable_moves
+        return self._rook_bishop_queen_move_check(board_state)
 
 
 class King(Piece):
