@@ -7,6 +7,11 @@ class UserInterface():
     MENU_MESSAGE = """1) Play chess.\n2) Get chess moves from previous game.\n3) Exit.
 \nYour input: """
 
+    WHITE_TURN_MSG = "White Player. Enter your move, for example: A2 to A3. To quit write 'quit'"
+    BLACK_TURN_MSG = "Black Player. Enter your move, for example: A2 to A3. To quit write 'quit'"
+    TURN_INPUT = "Starting tile, End tile: "
+    INCORRECT_MSG = "Incorrect input: Please provide commands in format: B1 to C4 (column/row)"
+
     def __init__(self):
         self.OPTIONS = {"1": self.play_chess,
                         "2": self.get_moves,
@@ -24,13 +29,15 @@ class UserInterface():
          txt_lenght (lenght of the text)
 
         """
-        def see_if_rounded(txt_lenght):
+        def if_rounded(txt_lenght):
+            """If a number would be rounded returns true
+            """
             return round(number=txt_lenght, ndigits=None) < txt_lenght or \
                 round(number=txt_lenght, ndigits=None) > txt_lenght
 
         txt_lenght = txt_lenght
         txt_lenght -= len(title)
-        odd = see_if_rounded(txt_lenght/2)
+        odd = if_rounded(txt_lenght/2)
         txt_lenght = txt_lenght // 2
         base_str = ""
         if len(title) > 0:
@@ -44,6 +51,13 @@ class UserInterface():
         print(title)
 
     def play_chess(self):
+        """Handles the chessplay turns with player inputs and move checking,
+        and board updating.
+        
+        - p_piece : player piece, current turns player piece
+        - t_tile : target tile.
+        - rmvd_p_info : if a piece was removed, its info otherwise None
+        """        
 
         board = chessboard.ChessBoard(chesspiece.chesspieces)
         board.make_board()
@@ -57,49 +71,45 @@ class UserInterface():
                 break
 
             if turn_white:
-                print("White Player. Enter your move, for example: A2 to A3. To quit write 'quit'")
-                player_input = input("Starting tile, End tile: ")
+                print(UserInterface.WHITE_TURN_MSG)
+                player_input = input(UserInterface.TURN_INPUT)
             else:
-                print("Black Player. Enter your move, for example: A2 to A3. To quit write 'quit'")
-                player_input = input("Starting tile, End tile: ")
+                print(UserInterface.BLACK_TURN_MSG)
+                player_input = input(UserInterface.TURN_INPUT)
             if player_input.lower() == "quit":
                 break
             try:
-                chosen_piece, target_tile = UserInterface.parse_input(
+                p_piece, t_tile = UserInterface.parse_input(
                     player_input)
             except (IndexError, ValueError) as _:
                 # print(errors)
-                print("Incorrect input: Please provide commands \
-                    in format: B1 to C4 (column/row)")
+                print(UserInterface.INCORRECT_MSG)
             else:
-                player_color = "W" if turn_white else "B"
-                print(chosen_piece)
-                print(target_tile)
-                if board.state[chosen_piece[0]][chosen_piece[1]] is not None:
-                    # print(board.state[chosen_piece[0]][chosen_piece[1]].get_info())
-                    # print(board.state[chosen_piece[0]]
-                    #       [chosen_piece[1]].get_position())
-                    if board.state[chosen_piece[0]][chosen_piece[1]].check_move(target_tile, board.state, player_color):
-                        removed_piece_info = board.update_board(
-                            chosen_piece, target_tile)
-                        print(
-                            f"Moving {board.state[target_tile[0]][target_tile[1]].get_info()['type']}", end="")
-                        print(f"to {target_tile}")
-                        if removed_piece_info is not None:
+                p_color = "W" if turn_white else "B"
+                print(p_piece)
+                print(t_tile)
+                if board.state[p_piece[0]][p_piece[1]] is not None:
+                    # print(board.state[p_piece[0]][p_piece[1]].get_info())
+                    # print(board.state[p_piece[0]]
+                    #       [p_piece[1]].get_position())
+                    if board.state[p_piece[0]][p_piece[1]].check_move(t_tile, board.state, p_color):
+                        rmvd_p_info = board.update_board(p_piece, t_tile)
+                        target = board.state[t_tile[0]][t_tile[1]].get_info()['type']
+                        print(f"Moving {target}", end="")
+                        print(f"to {t_tile}")
+                        if rmvd_p_info is not None:
                             if turn_white:
-                                black_player_pieces.remove(removed_piece_info)
-                                print(
-                                    f"Black player loses: {removed_piece_info['type']}")
+                                black_player_pieces.remove(rmvd_p_info)
+                                print(f"Black player loses: {rmvd_p_info['type']}")
                             else:
-                                white_player_pieces.remove(removed_piece_info)
-                                print(
-                                    f"White player loses: {removed_piece_info['type']}")
+                                white_player_pieces.remove(rmvd_p_info)
+                                print(f"White player loses: {rmvd_p_info['type']}")
                         turn_white = not turn_white
                         board.move += 1
                     else:
                         print(
-                            f"Cannot move {board.state[chosen_piece[0]][chosen_piece[1]].get_info()['type']}", end="")
-                        print(f"to {target_tile}")
+                            f"Cannot move {board.state[p_piece[0]][p_piece[1]].get_info()['type']}", end="")
+                        print(f"to {t_tile}")
                 else:
                     print(f"Board index is empty - Nothing to move")
         UserInterface.print_line("Back to menu", ' ', '-', 39)

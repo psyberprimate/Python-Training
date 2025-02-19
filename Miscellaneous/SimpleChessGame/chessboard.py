@@ -15,9 +15,10 @@ class ChessBoard():
         self.initial_state = chesspieces
 
     def make_board(self):
-        """Makes the "board" for the pieces as 2-d list by calling assemble_pieces().
-        The rows are represented by y and columns by x. The list of chess pieces and
-        None values representing empty board slots gets saved in self.state
+        """Makes the "board" for the pieces as 2-d list by
+        calling assemble_pieces(). The rows are represented by
+        y and columns by x. The list of chess pieces and None
+        values representing empty board slots gets saved in self.state
         """
         self.state = [[self.assemble_pieces((y, x))
                        for x in range(self.x)] for y in range(self.y)]
@@ -50,35 +51,36 @@ class ChessBoard():
         else:
             return None
 
-    def update_board(self, origin_index: tuple, target_index: tuple) -> Tuple[list, Any]:
+    def update_board(self, origin: tuple, target: tuple) -> Tuple[list, Any]:
         """Updates the board with new piece locations at self.state by
         setting the old position to None and new position as
         updated position. If a piece was removed from new position also
-        returns removed_info as not None.Also keep the both colors kings
+        returns removed_info as not None. Also keep the both colors kings
         locations up to date in self.white_king and self.black_king. 
 
         Returns: None or dictionary of chesspiece info
         """
-        updated_piece = self.state[origin_index[0]][origin_index[1]]
-        removed_piece = self.state[target_index[0]][target_index[1]]
+        updated_piece = self.state[origin[0]][origin[1]]
+        removed_piece = self.state[target[0]][target[1]]
 
         if removed_piece is not None:
             removed_info = removed_piece.get_info()
         else:
             removed_info = None
 
-        self.state[origin_index[0]][origin_index[1]] = None
-        self.state[target_index[0]][target_index[1]] = updated_piece
-        self.state[target_index[0]][target_index[1]].set_position(target_index)
+        self.state[origin[0]][origin[1]] = None
+        self.state[target[0]][target[1]] = updated_piece
+        self.state[target[0]][target[1]].set_position(target)
+        
         print(f"updated piece information: {updated_piece.get_info()}")
 
-        if self.state[target_index[0]][target_index[1]].get_info()['type'] == "king":
-            if self.state[target_index[0]][target_index[1]].get_info()['color'] == "W":
-                self.white_king = self.state[target_index[0]
-                                             ][target_index[1]].get_position()
+        if self.state[target[0]][target[1]].get_info()['type'] == "king":
+            if self.state[target[0]][target[1]].get_info()['color'] == "W":
+                self.white_king = self.state[target[0]
+                                             ][target[1]].get_position()
             else:
-                self.black_king = self.state[target_index[0]
-                                             ][target_index[1]].get_position()
+                self.black_king = self.state[target[0]
+                                             ][target[1]].get_position()
         return removed_info
 
     def check_board_state(self):
@@ -118,8 +120,9 @@ class ChessBoard():
         return game_over
 
     def print_board(self):
-        """Simple function to print the chessboard. Iterates over the board.state
-        2d list which contains the chesspieces
+        """Simple function to print the chessboard.
+        Iterates over the board.state 2d list which
+        contains the chesspieces
         """
         self.print_line("SIMPLE CHESS", " ", "-", 39)
         self.print_line(f"Move: {self.move}", " ", ".", 39)
@@ -133,8 +136,9 @@ class ChessBoard():
                 if piece is None:
                     print(" o ", end=" ")
                 else:
-                    print(
-                        f"{self.state[j][i].get_info()['symbol']}_{self.state[j][i].get_info()['color'].lower()}", end=" ")
+                    symbol = self.state[j][i].get_info()['symbol']
+                    color = self.state[j][i].get_info()['color'].lower()
+                    print(f"{symbol}_{color}", end=" ")
             print(f"| {j+1}")
         print("---------------------------------------")
         print("  |  a   b   c   d   e   f   g   h  | ")

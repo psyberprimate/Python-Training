@@ -3,7 +3,7 @@ import copy
 
 class Piece:
     """Base class for chess Pieces. Contains the basics
-    functions needed by other classes.
+    functions needed by other chesspiece classes.
     """
 
     def __init__(self, position: tuple):
@@ -21,21 +21,26 @@ class Piece:
     def set_moved(self):
         self.info["moved"] = True
 
-    def check_move(self, target_tile: tuple, board_state: list, player_color: str) -> bool:
+    def check_move(self, t_tile: tuple,
+                   board_state: list, p_color: str) -> bool:
         """Checks if the chess move the player attemps is legal or not.
+
+        t_tile : target tile
+        board_state: chessboard list
+        p_color: player color
         """
 
-        if player_color == self.get_info()['color']:
+        if p_color == self.get_info()['color']:
             viable_moves = self._get_moves(board_state)
             print(f"viable moves: {viable_moves}")
-            if target_tile in viable_moves:
+            if t_tile in viable_moves:
                 if not self.get_info()['moved']:
                     self.set_moved()
-                if board_state[target_tile[0]][target_tile[1]] is None:
+                if board_state[t_tile[0]][t_tile[1]] is None:
                     return True
                 else:
-                    if board_state[target_tile[0]][target_tile[1]].get_info()['type'] != "king":
-                        self.set_position(target_tile)
+                    if board_state[t_tile[0]][t_tile[1]].get_info()['type'] != "king":
+                        self.set_position(t_tile)
                         return True
                     else:
                         print("A King can only check mated - not eaten")
@@ -63,7 +68,8 @@ class Pawn(Piece):
             if self.get_info()['color'] == "W" else self.TILE_MOVEMENTS_BLACK
 
     def white_or_black_attack(self):
-        return self.WHITE_attack if self.get_info()['color'] == "W" else self.BLACK_atttack
+        return self.WHITE_attack \
+            if self.get_info()['color'] == "W" else self.BLACK_atttack
 
     def initial_movement(self):
         return [(2, 0)] if self.get_info()['color'] == "W" else [(-2, 0)]
@@ -77,28 +83,28 @@ class Pawn(Piece):
         """Pawn movement, regular and attack pattern with initial 2 step move.
         """
 
-        row, column = self.get_position()
+        row, col = self.get_position()
         viable_moves = []
         moveset = copy.copy(self.white_or_black_movement())
         # check if piece has moved or not, if not append the moveset list
         if not self.get_info()['moved']:
             moveset.extend(self.initial_movement())
         # pawn regular movement
-        for row2, column2 in moveset:
-            row_target, column_target = row + row2, column + column2
-            if 0 <= row_target < 8 and 0 <= column_target < 8:
-                if board_state[row_target][column_target] is None:
-                    viable_moves.append((row_target, column_target))
+        for row2, col2 in moveset:
+            trgt_row, trgt_col = row + row2, col + col2
+            if 0 <= trgt_row < 8 and 0 <= trgt_col < 8:
+                if board_state[trgt_row][trgt_col] is None:
+                    viable_moves.append((trgt_row, trgt_col))
                 else:
                     break
         # pawn piece capturing
-        for row3, column3 in self.white_or_black_attack():
-            row_target2, column_target2 = row + row3, column + column3
-            if 0 <= row_target2 < 8 and 0 <= column_target2 < 8:
-                if board_state[row_target2][column_target2] is not None:
-                    if board_state[row_target2][column_target2].get_info()['color'] \
+        for row3, col3 in self.white_or_black_attack():
+            trgt_row2, trgt_col2 = row + row3, col + col3
+            if 0 <= trgt_row2 < 8 and 0 <= trgt_col2 < 8:
+                if board_state[trgt_row2][trgt_col2] is not None:
+                    if board_state[trgt_row2][trgt_col2].get_info()['color'] \
                             != self.get_info()['color']:
-                        viable_moves.append((row_target2, column_target2))
+                        viable_moves.append((trgt_row2, trgt_col2))
         return viable_moves
 
 
@@ -112,21 +118,21 @@ class Bishop(Piece):
 
     def _get_moves(self, board_state: list) -> list:
 
-        row, column = self.get_position()
+        row, col = self.get_position()
         viable_moves = []
 
-        for row2, column2 in self.TILE_MOVEMENTS:
-            row_target, column_target = row + row2, column + column2
-            while 0 <= row_target < 8 and 0 <= column_target < 8:
-                if board_state[row_target][column_target] is None:
-                    viable_moves.append((row_target, column_target))
+        for row2, col2 in self.TILE_MOVEMENTS:
+            trgt_row, trgt_col = row + row2, col + col2
+            while 0 <= trgt_row < 8 and 0 <= trgt_col < 8:
+                if board_state[trgt_row][trgt_col] is None:
+                    viable_moves.append((trgt_row, trgt_col))
                 else:
-                    if board_state[row_target][column_target].get_info()['color'] \
+                    if board_state[trgt_row][trgt_col].get_info()['color'] \
                             != self.get_info()['color']:
-                        viable_moves.append((row_target, column_target))
+                        viable_moves.append((trgt_row, trgt_col))
                     break
-                row_target += row2
-                column_target += column2
+                trgt_row += row2
+                trgt_col += col2
         return viable_moves
 
 
@@ -141,18 +147,18 @@ class Knight(Piece):
 
     def _get_moves(self, board_state: list) -> list:
 
-        row, column = self.get_position()
+        row, col = self.get_position()
         viable_moves = []
 
-        for row2, column2 in self.TILE_MOVEMENTS:
-            row_target, column_target = row + row2, column + column2
-            if 0 <= row_target < 8 and 0 <= column_target < 8:
-                if board_state[row_target][column_target] is None:
-                    viable_moves.append((row_target, column_target))
+        for row2, col2 in self.TILE_MOVEMENTS:
+            trgt_row, trgt_col = row + row2, col + col2
+            if 0 <= trgt_row < 8 and 0 <= trgt_col < 8:
+                if board_state[trgt_row][trgt_col] is None:
+                    viable_moves.append((trgt_row, trgt_col))
                 else:
-                    if board_state[row_target][column_target].get_info()['color'] \
+                    if board_state[trgt_row][trgt_col].get_info()['color'] \
                             != self.get_info()['color']:
-                        viable_moves.append((row_target, column_target))
+                        viable_moves.append((trgt_row, trgt_col))
         return viable_moves
 
 
@@ -166,21 +172,21 @@ class Rook(Piece):
 
     def _get_moves(self, board_state: list) -> list:
 
-        row, column = self.get_position()
+        row, col = self.get_position()
         viable_moves = []
 
-        for row2, column2 in self.TILE_MOVEMENTS:
-            row_target, column_target = row + row2, column + column2
-            while 0 <= row_target < 8 and 0 <= column_target < 8:
-                if board_state[row_target][column_target] is None:
-                    viable_moves.append((row_target, column_target))
+        for row2, col2 in self.TILE_MOVEMENTS:
+            trgt_row, trgt_col = row + row2, col + col2
+            while 0 <= trgt_row < 8 and 0 <= trgt_col < 8:
+                if board_state[trgt_row][trgt_col] is None:
+                    viable_moves.append((trgt_row, trgt_col))
                 else:
-                    if board_state[row_target][column_target].get_info()['color'] \
+                    if board_state[trgt_row][trgt_col].get_info()['color'] \
                             != self.get_info()['color']:
-                        viable_moves.append((row_target, column_target))
+                        viable_moves.append((trgt_row, trgt_col))
                     break
-                row_target += row2
-                column_target += column2
+                trgt_row += row2
+                trgt_col += col2
         return viable_moves
 
 
@@ -195,21 +201,21 @@ class Queen(Piece):
 
     def _get_moves(self, board_state: list) -> list:
 
-        row, column = self.get_position()
+        row, col = self.get_position()
         viable_moves = []
 
-        for row2, column2 in self.TILE_MOVEMENTS:
-            row_target, column_target = row + row2, column + column2
-            while 0 <= row_target < 8 and 0 <= column_target < 8:
-                if board_state[row_target][column_target] is None:
-                    viable_moves.append((row_target, column_target))
+        for row2, col2 in self.TILE_MOVEMENTS:
+            trgt_row, trgt_col = row + row2, col + col2
+            while 0 <= trgt_row < 8 and 0 <= trgt_col < 8:
+                if board_state[trgt_row][trgt_col] is None:
+                    viable_moves.append((trgt_row, trgt_col))
                 else:
-                    if board_state[row_target][column_target].get_info()['color'] \
+                    if board_state[trgt_row][trgt_col].get_info()['color'] \
                             != self.get_info()['color']:
-                        viable_moves.append((row_target, column_target))
+                        viable_moves.append((trgt_row, trgt_col))
                     break
-                row_target += row2
-                column_target += column2
+                trgt_row += row2
+                trgt_col += col2
         return viable_moves
 
 
@@ -227,7 +233,8 @@ class King(Piece):
                                (-1, 0), (0, 1), (1, 0), (0, -1)]
         self.check = False
 
-    def temporary_board(self, start_position, target_position, board_state) -> list[list]:
+    def temporary_board(self, start_position,
+                        target_position, board_state) -> list[list]:
 
         temporary = [copy.deepcopy(row) for row in board_state]
         chesspiece = temporary[start_position[0]][start_position[1]]
@@ -238,26 +245,26 @@ class King(Piece):
 
     def _can_tower(self, board_state: list):
         """To be implemented
-        """        
+        """
         pass
 
     def _get_moves(self, board_state: list) -> list:
 
-        row, column = self.get_position()
+        row, col = self.get_position()
         viable_moves = []
-        row_king, column_king = self.other_king_location(board_state)
+        row_king, col_king = self.other_king_location(board_state)
 
-        for row2, column2 in self.TILE_MOVEMENTS:
-            row_target, column_target = row + row2, column + column2
-            if 0 <= row_target < 8 and 0 <= column_target < 8:
-                if abs(row_target - row_king) <= 1 and abs(column_target - column_king) <= 1:
+        for row2, col2 in self.TILE_MOVEMENTS:
+            trgt_row, trgt_col = row + row2, col + col2
+            if 0 <= trgt_row < 8 and 0 <= trgt_col < 8:
+                if abs(trgt_row - row_king) <= 1 and abs(trgt_col - col_king) <= 1:
                     continue
-                if board_state[row_target][column_target] is None:
-                    viable_moves.append((row_target, column_target))
+                if board_state[trgt_row][trgt_col] is None:
+                    viable_moves.append((trgt_row, trgt_col))
                 else:
-                    if board_state[row_target][column_target].get_info()['color'] \
+                    if board_state[trgt_row][trgt_col].get_info()['color'] \
                             != self.get_info()['color']:
-                        viable_moves.append((row_target, column_target))
+                        viable_moves.append((trgt_row, trgt_col))
                         break
 
         return viable_moves
@@ -268,12 +275,11 @@ class King(Piece):
         other_king = None
 
         for row in range(0, 8):
-            for column in range(0, 8):
-                chesspiece = board_state[row][column]
+            for col in range(0, 8):
+                chesspiece = board_state[row][col]
                 if chesspiece is not None:
                     if chesspiece.get_info()['type'] == "king" \
                             and chesspiece.get_info()['color'] != self.get_info()['color']:
-                        # print(f"chesspiece.get_info(): {chesspiece.get_info()}")
                         other_king = chesspiece
                         break
 
@@ -285,8 +291,8 @@ class King(Piece):
         king_location = self.get_position()
 
         for row2 in range(0, 8):
-            for column2 in range(0, 8):
-                chesspiece = board_state[row2][column2]
+            for col2 in range(0, 8):
+                chesspiece = board_state[row2][col2]
                 if chesspiece is not None:
                     if chesspiece.get_info()['color'] != self.get_info()['color']:
                         if king_location in chesspiece._get_moves(board_state):
@@ -297,8 +303,9 @@ class King(Piece):
         return False
 
     def is_checkmate(self, board_state: list) -> bool:
-        """Checks if the king is checkmated. First checks if king can move and then
-        if other pieces can help the king
+        """Checks if the king is checkmated. First checks
+        if king can move and then if other pieces can
+        help the king.
         """
         king_moves = self._get_moves(board_state)
 
@@ -309,8 +316,8 @@ class King(Piece):
                 return False
 
         for row in range(0, 8):
-            for column in range(0, 8):
-                chesspiece = board_state[row][column]
+            for col in range(0, 8):
+                chesspiece = board_state[row][col]
                 if chesspiece is not None:
                     if chesspiece.get_info()['color'] == self.get_info()['color']:
                         viable_moves = chesspiece._get_moves(board_state)
@@ -332,10 +339,11 @@ class King(Piece):
             return False
 
         for row in range(0, 8):
-            for column in range(0, 8):
-                chesspiece = board_state[row][column]
-                if chesspiece is not None and chesspiece.get_info()['color'] == self.get_info()['color']:
-                    if chesspiece._get_moves(board_state):
-                        return False
+            for col in range(0, 8):
+                chesspiece = board_state[row][col]
+                if chesspiece is not None:
+                    if chesspiece.get_info()['color'] == self.get_info()['color']:
+                        if chesspiece._get_moves(board_state):
+                            return False
 
         return True
