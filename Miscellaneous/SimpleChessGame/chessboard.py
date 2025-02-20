@@ -52,11 +52,9 @@ class ChessBoard():
             return None
 
     def update_board(self, origin: tuple, target: tuple) -> Tuple[list, Any]:
-        """Updates the board with new piece locations at self.state by
-        setting the old position to None and new position as
-        updated position. If a piece was removed from new position also
-        returns removed_info as not None. Also keep the both colors kings
-        locations up to date in self.w_king and self.b_king. 
+        """Updates the board with new piece locations,
+        keep track of position of both kings. Also, checks
+        if castling can be done. 
 
         Returns: None or dictionary of chesspiece info
         """
@@ -72,15 +70,37 @@ class ChessBoard():
         self.state[target[0]][target[1]] = updated_piece
         self.state[target[0]][target[1]].set_position(target)
 
-        print(f"updated piece information: {updated_piece.get_info()}")
-
         if self.state[target[0]][target[1]].get_info()['type'] == "king":
             if self.state[target[0]][target[1]].get_info()['color'] == "W":
-                self.w_king = self.state[target[0]
-                                         ][target[1]].get_position()
+                self.w_king = self.state[target[0]][target[1]].get_position()
             else:
-                self.b_king = self.state[target[0]
-                                         ][target[1]].get_position()
+                self.b_king = self.state[target[0]][target[1]].get_position()
+
+        #check for castlings
+        if self.state[target[0]][target[1]].get_info()["type"] == "king":
+            if self.state[target[0]][target[1]].get_info()["castle"]:
+                if target[1] < 3:
+                    rook_to_update = self.state[target[0]][target[1]-2]
+                    self.state[target[0]][target[1]-2] = None
+                    self.state[target[0]][target[1]+1] = rook_to_update
+                else:
+                    rook_to_update = self.state[target[0]][target[1]+1]
+                    self.state[target[0]][target[1]+1] = None
+                    self.state[target[0]][target[1]-1] = rook_to_update
+                
+                rook_to_update.set_moved()
+                self.state[target[0]][target[1]].set_castle_off()
+                rook_info = rook_to_update.get_info()
+                king = self.state[target[0]][target[1]]
+                king_info = king.get_info()
+                print(f"Castling with: {king_info['type']} at", end=" ")
+                print(f"{king.to_chess_format(king_info["position"])}", end=" ")
+                print(f"with {rook_info['type']} at", end=" ")
+        
+        info = updated_piece.get_info()
+        
+        print(f"Move: {info['type']} to {updated_piece.to_chess_format(info["position"])}")
+        
         return removed_info
 
     def check_board_state(self):
@@ -179,6 +199,25 @@ class ChessBoard():
 
 
 if __name__ == "__main__":
-    chessboard = ChessBoard(chesspiece.chesspieces)
+    chessboard = ChessBoard(chesspiece.chesspieces_dummy)
     chessboard.make_board()
+    chessboard.print_board()
+    
+    # p_color = "W"
+    # p_piece = chessboard.state[chessboard.w_king[0]][chessboard.w_king[1]].get_info()['position']
+    # t_tile = (0, 6)
+    # if chessboard.state[chessboard.w_king[0]][chessboard.w_king[1]].check_move(t_tile, chessboard.state, p_color):
+    #     print("Castling possible for white")
+    #     chessboard.update_board(p_piece, t_tile)
+    # else:
+    #     print("Castling cannot be done for white")
+        
+    p_piece = chessboard.state[chessboard.b_king[0]][chessboard.b_king[1]].get_info()['position']
+    t_tile = (7, 6)
+    if chessboard.state[chessboard.b_king[0]][chessboard.b_king[1]].check_move(t_tile, chessboard.state, "B"):
+        print("Castling possible for black")
+        chessboard.update_board(p_piece, t_tile)
+    else:
+        print("Castling cannot be done for black")    
+    
     chessboard.print_board()
