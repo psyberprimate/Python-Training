@@ -83,7 +83,7 @@ class Pawn(Piece):
 
     def __init__(self, position: tuple, color: str):
         self.info = {"type": "pawn", "color": color,
-                     "position": position, "symbol": "P",
+                     "position": position, "symbol": {"W":"\u2659", "B":"\u265F"},
                      "moved": False, "en_passant": False}
         self.TILE_MOVEMENTS_WHITE = [(1, 0)]
         self.TILE_MOVEMENTS_BLACK = [(-1, 0)]
@@ -143,7 +143,7 @@ class Bishop(Piece):
 
     def __init__(self, position: tuple, color: str):
         self.info = {"type": "bishop", "color": color,
-                     "position": position, "symbol": "B",
+                     "position": position, "symbol": {"W":"\u2657", "B":"\u265D"},
                      "moved": False}
         self.TILE_MOVEMENTS = [(-1, 1), (1, 1), (-1, -1), (1, -1)]
 
@@ -155,7 +155,7 @@ class Knight(Piece):
 
     def __init__(self, position: tuple, color: str):
         self.info = {"type": "knight", "color": color,
-                     "position": position, "symbol": "N",
+                     "position": position, "symbol": {"W":"\u2658", "B":"\u265E"},
                      "moved": False}
         self.TILE_MOVEMENTS = [(-2, -1), (-1, -2), (1, -2), (2, -1),
                                (-2, 1), (-1, 2), (1, 2), (2, 1)]
@@ -181,7 +181,7 @@ class Rook(Piece):
 
     def __init__(self, position: tuple, color: str):
         self.info = {"type": "rook", "color": color,
-                     "position": position, "symbol": "R",
+                     "position": position, "symbol": {"W":"\u2656", "B":"\u265C"},
                      "moved": False}
         self.TILE_MOVEMENTS = [(-1, 0), (0, 1), (1, 0), (0, -1)]
 
@@ -193,7 +193,7 @@ class Queen(Piece):
 
     def __init__(self, position: tuple, color: str):
         self.info = {"type": "queen", "color": color,
-                     "position": position, "symbol": "Q",
+                     "position": position, "symbol": {"W":"\u2655", "B": "\u265B"},
                      "moved": False}
         self.TILE_MOVEMENTS = [(-1, 1), (1, 1), (-1, -1), (1, -1),
                                (-1, 0), (0, 1), (1, 0), (0, -1)]
@@ -210,7 +210,7 @@ class King(Piece):
 
     def __init__(self, position: tuple, color: str):
         self.info = {"type": "king", "color": color,
-                     "position": position, "symbol": "K",
+                     "position": position, "symbol": {"W": "\u2654", "B": "\u265A"},
                      "moved": False, "check": False,
                      "castle": False}
         self.TILE_MOVEMENTS = [(-1, 1), (1, 1), (-1, -1), (1, -1),

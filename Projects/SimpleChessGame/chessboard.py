@@ -1,7 +1,8 @@
 import pieces
 from typing import Tuple, Any
 import chesspiece
-
+from colorama import Fore, Back, Style
+from colorama import just_fix_windows_console
 
 class ChessBoard():
 
@@ -146,24 +147,39 @@ class ChessBoard():
         Iterates over the board.state 2d list which
         contains the chesspieces
         """
-        self.print_line("SIMPLE CHESS", " ", "-", 39)
-        self.print_line(f"Move: {self.move}", " ", ".", 39)
-        self.print_line("FIGHT", " ", ".", 39)
+        white_tile = True
+        self.print_line("SIMPLE CHESS", " ", "-", 46)
+        self.print_line(f"Move: {self.move}", " ", ".", 46)
         print()
-        print("---  a   b   c   d   e   f   g   h  ---")
+        print("  || a    b    c    d    e    f    g    h || ")
+        print("#"*2, end="")
+        print("||", end="")
+        print("#"*38, end="")
+        print("||", end="")
+        print("#"*2)
         for j in range(self.y-1, -1, -1):
-            print(f"{j+1} |", end=" ")
+            print(f"{j+1} |", end="")
             for i in range(0, self.x):
                 piece = self.state[j][i]
-                if piece is None:
-                    print(" o ", end=" ")
+                if white_tile:
+                    tile_color = Back.CYAN + Style.DIM
                 else:
-                    symbol = self.state[j][i].get_info()['symbol']
-                    color = self.state[j][i].get_info()['color'].lower()
-                    print(f"{symbol}_{color}", end=" ")
+                    tile_color = Back.MAGENTA + Style.DIM
+                if piece is None:
+                    print(tile_color + "| x |" + Style.RESET_ALL, end="")
+                else:
+                    color = self.state[j][i].get_info()['color']
+                    symbol = self.state[j][i].get_info()['symbol'][color]
+                    print(tile_color + f"| {symbol} |" + Style.RESET_ALL, end="")
+                white_tile = not white_tile
+            white_tile = not white_tile
             print(f"| {j+1}")
-        print("---------------------------------------")
-        print("  |  a   b   c   d   e   f   g   h  | ")
+        print("#"*2, end="")
+        print("||", end="")
+        print("#"*38, end="")
+        print("||", end="")
+        print("#"*2)
+        print("  || a    b    c    d    e    f    g    h || ")
 
     def print_game_status(self):
         pass

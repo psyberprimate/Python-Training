@@ -1,6 +1,6 @@
 import chessboard
 import chesspiece
-
+from colorama import init
 
 class UserInterface():
 
@@ -140,6 +140,7 @@ class UserInterface():
         print("To be implemented")
 
     def program_flow(self):
+        init()
         UserInterface.print_line("Welcome to Simple Chess!", " ", "*", 39)
         while (option := input(UserInterface.MENU_MESSAGE)) != "3":
             try:
