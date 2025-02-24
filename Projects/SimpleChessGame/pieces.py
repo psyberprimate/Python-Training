@@ -101,9 +101,6 @@ class Pawn(Piece):
     def initial_movement(self):
         return [(2, 0)] if self.get_info()['color'] == "W" else [(-2, 0)]
 
-    def _can_en_passant(self):
-        pass
-
     def _get_moves(self, board_state: list) -> list:
         """Pawn movement, regular and attack pattern with initial 2 step move.
         """
@@ -131,6 +128,15 @@ class Pawn(Piece):
                             != self.get_info()['color']:
                         viable_moves.append((trgt_row2, trgt_col2))
         return viable_moves
+
+    def _en_passant(self):
+        pass
+    
+    def _promotion(self):
+        pass
+    
+    def _check_promote(self):
+        pass
 
 
 class Bishop(Piece):
@@ -228,8 +234,7 @@ class King(Piece):
         temp = copy.deepcopy(board_state)
         chesspiece = temp[strt_pstn[0]][strt_pstn[1]]
         temp[trgt_pstn[0]][trgt_pstn[1]] = chesspiece
-        temp[trgt_pstn[0]][trgt_pstn[1]].set_position(
-            (trgt_pstn[0], trgt_pstn[1]))
+        temp[trgt_pstn[0]][trgt_pstn[1]].set_position((trgt_pstn[0], trgt_pstn[1]))
         temp[strt_pstn[0]][strt_pstn[1]] = None
 
         return temp, temp[trgt_pstn[0]][trgt_pstn[1]]
@@ -239,8 +244,7 @@ class King(Piece):
         row, col = self.get_position()
         viable_moves = []
         row_king, col_king = self.other_king_location(board_state)
-        castling_move = [] if skip_castle_check else self._can_castle(
-            board_state)
+        castling_move = [] if skip_castle_check else self._can_castle(board_state)
 
         for row2, col2 in self.TILE_MOVEMENTS:
             trgt_row, trgt_col = row + row2, col + col2
@@ -283,19 +287,15 @@ class King(Piece):
         else:
             king_location = temp_piece.get_position()
 
-        # print(f"Checking if King at {king_location} is in check.")
-
         for row in range(0, 8):
             for col in range(0, 8):
                 chesspiece = board_state[row][col]
                 if chesspiece is not None:
                     if chesspiece.get_info()['color'] != self.get_info()['color']:
                         if chesspiece.get_info()['type'] == "king":
-                            chesspiece_moves = chesspiece._get_moves(
-                                board_state, skip_castle_check)
+                            chesspiece_moves = chesspiece._get_moves(board_state, skip_castle_check)
                         else:
-                            chesspiece_moves = chesspiece._get_moves(
-                                board_state)
+                            chesspiece_moves = chesspiece._get_moves(board_state)
                         if king_location in chesspiece_moves:
                             print(
                                 f"King is checked by {chesspiece.get_info()['type']}", end=" ")
@@ -389,12 +389,11 @@ class King(Piece):
                 castle_moves.append((trgt_castling[index], rook))
         # Check that if the castling move would put king into check
         for move in castle_moves:
-            temp_board, temp_piece = self.temporary_board(
-                self.get_position(), move[0], board_state)
+            temp_board, temp_piece = self.temporary_board(self.get_position(), move[0], board_state)
             # check that the king old position is not checked
-            if not self.is_checked(temp_board, None, False):
+            if not self.is_checked(temp_board, None, True):
                 # check that the king new position is not checked
-                if not self.is_checked(temp_board, temp_piece, False):
+                if not self.is_checked(temp_board, temp_piece, True):
                     viable_castle_moves.append(move[0])
                     self.set_castle_on()
 

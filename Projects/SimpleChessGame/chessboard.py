@@ -76,7 +76,7 @@ class ChessBoard():
             else:
                 self.b_king = self.state[target[0]][target[1]].get_position()
 
-        #check for castlings
+        # check for castlings
         if self.state[target[0]][target[1]].get_info()["type"] == "king":
             if self.state[target[0]][target[1]].get_info()["castle"]:
                 if target[1] < 3:
@@ -87,20 +87,22 @@ class ChessBoard():
                     rook_to_update = self.state[target[0]][target[1]+1]
                     self.state[target[0]][target[1]+1] = None
                     self.state[target[0]][target[1]-1] = rook_to_update
-                
+
                 rook_to_update.set_moved()
                 self.state[target[0]][target[1]].set_castle_off()
                 rook_info = rook_to_update.get_info()
                 king = self.state[target[0]][target[1]]
                 king_info = king.get_info()
                 print(f"Castling with: {king_info['type']} at", end=" ")
-                print(f"{king.to_chess_format(king_info["position"])}", end=" ")
+                print(
+                    f"{king.to_chess_format(king_info["position"])}", end=" ")
                 print(f"with {rook_info['type']} at", end=" ")
-        
+
         info = updated_piece.get_info()
-        
-        print(f"Move: {info['type']} to {updated_piece.to_chess_format(info["position"])}")
-        
+
+        print(
+            f"Move: {info['type']} to {updated_piece.to_chess_format(info["position"])}")
+
         return removed_info
 
     def check_board_state(self):
@@ -202,22 +204,22 @@ if __name__ == "__main__":
     chessboard = ChessBoard(chesspiece.chesspieces_dummy)
     chessboard.make_board()
     chessboard.print_board()
-    
-    # p_color = "W"
-    # p_piece = chessboard.state[chessboard.w_king[0]][chessboard.w_king[1]].get_info()['position']
-    # t_tile = (0, 6)
-    # if chessboard.state[chessboard.w_king[0]][chessboard.w_king[1]].check_move(t_tile, chessboard.state, p_color):
-    #     print("Castling possible for white")
-    #     chessboard.update_board(p_piece, t_tile)
-    # else:
-    #     print("Castling cannot be done for white")
-        
+
+    p_color = "W"
+    p_piece = chessboard.state[chessboard.w_king[0]][chessboard.w_king[1]].get_info()['position']
+    t_tile = (0, 2)
+    if chessboard.state[chessboard.w_king[0]][chessboard.w_king[1]].check_move(t_tile, chessboard.state, p_color):
+        print("Castling possible for white")
+        chessboard.update_board(p_piece, t_tile)
+    else:
+        print("Castling cannot be done for white")
+
     p_piece = chessboard.state[chessboard.b_king[0]][chessboard.b_king[1]].get_info()['position']
     t_tile = (7, 6)
     if chessboard.state[chessboard.b_king[0]][chessboard.b_king[1]].check_move(t_tile, chessboard.state, "B"):
         print("Castling possible for black")
         chessboard.update_board(p_piece, t_tile)
     else:
-        print("Castling cannot be done for black")    
-    
+        print("Castling cannot be done for black")
+
     chessboard.print_board()

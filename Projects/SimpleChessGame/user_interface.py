@@ -95,7 +95,7 @@ class UserInterface():
                     #       [p_piece[1]].get_position())
                     if piece.check_move(t_tile, board.state, p_color):
                         rmvd_p_info = board.update_board(p_piece, t_tile)
-                        #target = board.state[t_tile[0]][t_tile[1]]
+                        # target = board.state[t_tile[0]][t_tile[1]]
                         # print(f"Moving {target.get_info()['type']}", end="")
                         # print(f"to {target.to_chess_format(target.get_info()['position'])}")
                         if rmvd_p_info is not None:
