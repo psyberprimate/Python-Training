@@ -17,15 +17,20 @@ class Piece:
         return self.info
 
     def set_moved(self):
-        self.info["moved"] = True
+        self.info["moved"] = True  
 
     @staticmethod
     def to_chess_format(loc_piece: tuple):
         letters = {0: "a", 1: "b", 2: "c", 3: "d",
                    4: "e", 5: "f", 6: "g", 7: "h"}
         return letters.get(loc_piece[1])+"".join(str(loc_piece[0]+1))
+    
+    @staticmethod
+    def color(color_key: str):
+        colors = {"W": "White", "B": "Black"}
+        return colors.get(color_key)
 
-    def check_move(self, t_tile: tuple,
+    def check_move(self, trgt_tile: tuple,
                    board_state: list, p_color: str) -> bool:
         """Checks if the chess move the player attemps is legal or not.
 
@@ -33,20 +38,40 @@ class Piece:
         board_state: chessboard list
         p_color: player color
         """
+        # def _check_if_pawn_promote():
+        #     if self.get_info()['type'] == "pawn":
+        #         self._is_promotion(trgt_tile)
+        #         self.set_position(trgt_tile)
+        #         return True
+        #     else:
+        #         self.set_position(trgt_tile)
+        #         return True
 
         if p_color == self.get_info()['color']:
             viable_moves = self._get_moves(board_state)
             #print(f"viable moves: {viable_moves}")
-            if t_tile in viable_moves:
-                piece = board_state[t_tile[0]][t_tile[1]]
+            if trgt_tile in viable_moves:
+                piece = board_state[trgt_tile[0]][trgt_tile[1]]
                 if not self.get_info()['moved']:
                     self.set_moved()
                 if piece is None:
-                    return True
+                    if self.get_info()['type'] == "pawn":
+                        self._is_promotion(trgt_tile)
+                        #self.set_position(trgt_tile)
+                        return True
+                    else:
+                        #self.set_position(trgt_tile)
+                        return True
                 else:
                     if piece.get_info()['type'] != "king":
-                        self.set_position(t_tile)
-                        return True
+                        if piece.get_info()['type'] == "pawn":
+                            self._is_promotion(trgt_tile)
+                            #self.set_position(trgt_tile)
+                            return True
+                        else:
+                            #self.set_position(trgt_tile)
+                            return True
+                        # _check_if_pawn_promote()
                     else:
                         print("A King can only check mated - not eaten")
                         return False
@@ -84,11 +109,15 @@ class Pawn(Piece):
     def __init__(self, position: tuple, color: str):
         self.info = {"type": "pawn", "color": color,
                      "position": position, "symbol": {"W":"\u2659", "B":"\u265F"},
-                     "moved": False, "en_passant": False}
+                     "moved": False, "en_passant": False, "promotion": False}
         self.TILE_MOVEMENTS_WHITE = [(1, 0)]
         self.TILE_MOVEMENTS_BLACK = [(-1, 0)]
         self.WHITE_attack = [(1, 1), (1, -1)]
         self.BLACK_atttack = [(-1, -1), (-1, 1)]
+        self.WHITE_PROMOTION = [(7, 0), (7, 1), (7, 2), (7, 3),
+                                (7, 4), (7, 5), (7, 6), (7, 7)]
+        self.BLACK_PROMOTION = [(0, 0), (0, 1), (0, 2), (0, 3),
+                                (0, 4), (0, 5), (0, 6), (0, 0)]
 
     def white_or_black_movement(self):
         return self.TILE_MOVEMENTS_WHITE \
@@ -100,6 +129,12 @@ class Pawn(Piece):
 
     def initial_movement(self):
         return [(2, 0)] if self.get_info()['color'] == "W" else [(-2, 0)]
+    
+    def get_promotion_tile(self):
+        if self.get_info()['color'] == "W":
+            return self.WHITE_PROMOTION
+        else:
+            return self.BLACK_PROMOTION
 
     def _get_moves(self, board_state: list) -> list:
         """Pawn movement, regular and attack pattern with initial 2 step move.
@@ -129,14 +164,16 @@ class Pawn(Piece):
                         viable_moves.append((trgt_row2, trgt_col2))
         return viable_moves
 
-    def _en_passant(self):
+    def _is_en_passant(self):
         pass
     
-    def _promotion(self):
-        pass
-    
-    def _check_promote(self):
-        pass
+    def _is_promotion(self, trgt_tile : tuple):
+        """Checks if pawn is required tile and whether it
+        can be promoted
+        """
+        promotion_tiles = self.get_promotion_tile()
+        if trgt_tile in promotion_tiles:
+            self.info["promotion"] = True
 
 
 class Bishop(Piece):
