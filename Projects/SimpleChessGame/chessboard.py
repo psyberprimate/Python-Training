@@ -2,7 +2,7 @@ import pieces
 from typing import Tuple, Any
 import chesspiece
 from colorama import Fore, Back, Style
-from colorama import just_fix_windows_console
+
 
 class ChessBoard():
 
@@ -59,6 +59,7 @@ class ChessBoard():
 
         Returns: None or dictionary of chesspiece info
         """
+        current_info = self.state[origin[0]][origin[1]].get_info()
         updated_piece = self.state[origin[0]][origin[1]]
         removed_piece = self.state[target[0]][target[1]]
 
@@ -80,6 +81,7 @@ class ChessBoard():
         # check for castlings
         if self.state[target[0]][target[1]].get_info()['type'] == "king":
             if self.state[target[0]][target[1]].get_info()['castle']:
+                # compare columns here for castling and make changes accordingly
                 if target[1] < 3:
                     rook_to_update = self.state[target[0]][target[1]-2]
                     self.state[target[0]][target[1]-2] = None
@@ -95,26 +97,43 @@ class ChessBoard():
                 king = self.state[target[0]][target[1]]
                 king_info = king.get_info()
                 print(f"Castling with: {king_info['type']} at", end=" ")
-                print(
-                    f"{king.to_chess_format(king_info['position'])}", end=" ")
+                print(f"{king.chess_format(king_info['position'])}", end=" ")
                 print(f"with {rook_info['type']} at", end=" ")
-                
+                print(f"{king.chess_format(rook_info['position'])}.", end=" ")
+
         # check for pawn en_passant or promotion rule
         if self.state[target[0]][target[1]].get_info()['type'] == "pawn":
-            print("[x inside en_passant or promotion rule]")
             if self.state[target[0]][target[1]].get_info()['promotion']:
-                print("[x] promotion rule]")
                 color = self.state[target[0]][target[1]].get_info()['color']
-                self.state[target[0]][target[1]] = pieces.Queen((target[0], target[1]), color)
+                self.state[target[0]][target[1]] = pieces.Queen(
+                    (target[0], target[1]), color)
                 queen = self.state[target[0]][target[1]]
                 queen_info = queen.get_info()
-                print(f"Promoting {queen.color(queen_info['color']).lower()} pawn to queen at", end=" ")
-                print(f"{queen.to_chess_format(queen_info['position'])}")
+                print(f"Promoting {queen.color(queen_info['color']).lower()}", end=" ")
+                print(f" pawn to queen at", end=" ")
+                print(f"{queen.chess_format(queen_info['position'])}.", end=" ")
+            if self.state[target[0]][target[1]].get_info()['can_en_passant']:
+                pawn = self.state[target[0]][target[1]]
+                info = self.state[target[0]][target[1]].get_info()
+                # Eats the piece by en passant
+                if info['color'] == "W":
+                    rmvd_info = self.state[target[0]-1][target[1]].get_info()
+                    self.state[target[0]-1][target[1]] = None
+                else:
+                    removed_info = self.state[target[0] -
+                                              1][target[1]].get_info()
+                    self.state[target[0]+1][target[1]] = None
+                print(f"En passant with: {info['type']} at", end=" ")
+                print(f"{pawn.chess_format(info['position'])}", end=" ")
+                print(f"agaist {rmvd_info['type']} at", end=" ")
+                print(f"{pawn.chess_format(rmvd_info['position'])}.", end=" ")
+                self.state[target[0]][target[1]].set_no_en_passant()
 
         info = updated_piece.get_info()
-
-        print(
-            f"Move: {info['type']} to {updated_piece.to_chess_format(info['position'])}")
+        color = updated_piece.color(info['color']).lower()
+        print(f"Move: {color} {info['type']} at ", end="")
+        print(f"{updated_piece.chess_format(current_info['position'])} ", end="")
+        print(f"to {updated_piece.chess_format(info['position'])}")
 
         return removed_info
 
@@ -182,7 +201,8 @@ class ChessBoard():
                 else:
                     color = self.state[j][i].get_info()['color']
                     symbol = self.state[j][i].get_info()['symbol'][color]
-                    print(tile_color + f"| {symbol} |" + Style.RESET_ALL, end="")
+                    print(tile_color + f"| {symbol} |" +
+                          Style.RESET_ALL, end="")
                 white_tile = not white_tile
             white_tile = not white_tile
             print(f"| {j+1}")
@@ -233,15 +253,6 @@ if __name__ == "__main__":
     chessboard.make_board()
     chessboard.print_board()
 
-    # p_color = "W"
-    # p_piece = chessboard.state[chessboard.w_king[0]][chessboard.w_king[1]].get_info()['position']
-    # t_tile = (0, 2)
-    # if chessboard.state[chessboard.w_king[0]][chessboard.w_king[1]].check_move(t_tile, chessboard.state, p_color):
-    #     print("Castling possible for white")
-    #     chessboard.update_board(p_piece, t_tile)
-    # else:
-    #     print("Castling cannot be done for white")
-
     # p_piece = chessboard.state[chessboard.b_king[0]][chessboard.b_king[1]].get_info()['position']
     # t_tile = (7, 6)
     # if chessboard.state[chessboard.b_king[0]][chessboard.b_king[1]].check_move(t_tile, chessboard.state, "B"):
@@ -249,16 +260,16 @@ if __name__ == "__main__":
     #     chessboard.update_board(p_piece, t_tile)
     # else:
     #     print("Castling cannot be done for black")
-        
-    t_tile = (7, 2)
-    pstn_piece = (6, 2)
-    p_piece = chessboard.state[pstn_piece[0]][pstn_piece[1]].get_info()['position']
 
-    if chessboard.state[pstn_piece[0]][pstn_piece[1]].check_move(t_tile, chessboard.state, "W"):
-        print("Viable move")
-        chessboard.update_board(p_piece, t_tile)
-    else:
-        print("Not viable move")
+    # t_tile = (7, 2)
+    # pstn_piece = (6, 2)
+    # p_piece = chessboard.state[pstn_piece[0]][pstn_piece[1]].get_info()['position']
 
-    chessboard.print_board()
-    print(chessboard.state[t_tile[0]][t_tile[1]].get_info())
+    # if chessboard.state[pstn_piece[0]][pstn_piece[1]].check_move(t_tile, chessboard.state, "W"):
+    #     print("Viable move")
+    #     chessboard.update_board(p_piece, t_tile)
+    # else:
+    #     print("Not viable move")
+
+    # chessboard.print_board()
+    # print(chessboard.state[t_tile[0]][t_tile[1]].get_info())

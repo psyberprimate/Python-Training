@@ -82,37 +82,25 @@ class UserInterface():
                 p_piece, t_tile = UserInterface.parse_input(
                     player_input)
             except (IndexError, ValueError) as _:
-                # print(errors)
                 print(UserInterface.INCORRECT_MSG)
             else:
                 p_color = "W" if turn_white else "B"
-                # print(p_piece)
-                # print(t_tile)
                 piece = board.state[p_piece[0]][p_piece[1]]
                 if piece is not None:
-                    # print(board.state[p_piece[0]][p_piece[1]].get_info())
-                    # print(board.state[p_piece[0]]
-                    #       [p_piece[1]].get_position())
                     if piece.check_move(t_tile, board.state, p_color):
                         rmvd_p_info = board.update_board(p_piece, t_tile)
-                        # target = board.state[t_tile[0]][t_tile[1]]
-                        # print(f"Moving {target.get_info()['type']}", end="")
-                        # print(f"to {target.to_chess_format(target.get_info()['position'])}")
                         if rmvd_p_info is not None:
                             if turn_white:
                                 black_player_pieces.remove(rmvd_p_info)
-                                print(
-                                    f"Black player loses: {rmvd_p_info['type']}")
+                                print(f"Black player loses: {rmvd_p_info['type']}")
                             else:
                                 white_player_pieces.remove(rmvd_p_info)
-                                print(
-                                    f"White player loses: {rmvd_p_info['type']}")
+                                print(f"White player loses: {rmvd_p_info['type']}")
                         turn_white = not turn_white
                         board.move += 1
                     else:
-                        print(
-                            f"Cannot move {piece.get_info()['type']}", end="")
-                        print(f"to {piece.to_chess_format(t_tile)}")
+                        print(f"Cannot move {piece.get_info()['type']}", end=" ")
+                        print(f"to {piece.chess_format(t_tile)}")
                 else:
                     print(f"Board index is empty - Nothing to move")
         UserInterface.print_line("Back to menu", ' ', '-', 39)
